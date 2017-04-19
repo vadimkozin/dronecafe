@@ -10,7 +10,7 @@
     git clone https://github.com/vadimkozin/droncafe 
     cd droncafe
     npm install
-    ./load-data-to-db
+    ./load-data-to-db.js
     echo "JWT_SECRET=you_secret" > .env
     npm start
     http://localhost:3000
