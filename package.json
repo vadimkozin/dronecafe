@@ -1,13 +1,13 @@
 {
-  "name": "droncafe",
+  "name": "dronecafe",
   "private": true,
   "version": "0.0.1",
-  "description": "Diplom project 'DronCafe'",
+  "description": "Diploma project 'Drone Cafe'",
   "repository": { 
     "type": "git",
-    "url": "https://github.com/vadimkozin/droncafe",
+    "url": "https://github.com/vadimkozin/dronecafe",
     "bugs": {
-      "url": "https://github.com/vadimkozin/droncafe/issues"
+      "url": "https://github.com/vadimkozin/dronecafe/issues"
     },
     "homepage": "https://afternoon-shelf-16477.herokuapp.com"
   },
