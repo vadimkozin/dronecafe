@@ -1,4 +1,4 @@
-### Diplom project 'DronCafe' - group ND4 (netology.ru)".
+###  Diploma work'DronCafe' - group ND4 (netology.ru)".
 
 ### preinstall
 ```bash
