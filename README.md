@@ -11,6 +11,7 @@
     cd droncafe
     npm install
     ./load-data-to-db
+    echo "JWT_SECRET=you_secret" > .env
     npm start
     http://localhost:3000
 ```
