@@ -10,7 +10,7 @@
     git clone https://github.com/vadimkozin/droncafe 
     cd droncafe
     npm install
-    node load-data-to-db
+    ./load-data-to-db
     npm start
     http://localhost:3000
 ```

@@ -1,5 +1,7 @@
-// Инициализация БД. Загрузка данных для меню
+#!/usr/bin/env node
 
+// Инициализация БД. Загрузка данных для меню
+require('dotenv').load();
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 require ('./app_api/db');
