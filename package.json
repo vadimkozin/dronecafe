@@ -1,9 +1,17 @@
 {
   "name": "droncafe",
-  "version": "0.0.0",
   "private": true,
+  "version": "0.0.1",
+  "description": "Diplom project 'DronCafe'",
+  "repository": "https://github.com/vadimkozin/droncafe",
+  "license": "MIT",
   "scripts": {
+    "postinstall": "bower install",
     "start": "node ./bin/www"
+  },
+  "engines": {
+    "node": "~6.9.0",
+    "npm": "~3.10.8"
   },
   "dependencies": {
     "angular": "^1.6.4",
@@ -23,8 +31,6 @@
     "socket.io": "^1.7.3"
   },
   "devDependencies": {
-    "bower": "^1.8.0",
-    "gulp": "^3.9.1",
-    "gulp-server-livereload": "^1.9.2"
+    "bower": "^1.8.0"
   }
 }
