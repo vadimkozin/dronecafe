@@ -1,0 +1,19 @@
+<style>
+nav {
+  height: 60px;
+  line-height: 60px;
+}
+</style>
+
+<nav>
+    <div class="nav-wrapper  light-green">
+      <a href="#" class="brand-logo">DronCafe</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="/home">Home</a></li>
+        <li><a href="/kitchen">Kitchen</a></li>        
+        <li ng-hide="navvm.isLoggedIn"><a href="/login/?page={{ navvm.currentPath }}">Login</a></li>
+        <li ng-show="navvm.isLoggedIn"><a href="" ng-click="navvm.logout()">{{ navvm.currentUser.name }}<i class="material-icons right">exit_to_app</i></a></li> 
+            
+      </ul>
+    </div>
+</nav>

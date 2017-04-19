@@ -1,0 +1,14 @@
+# nodemon - автоматическая перезагрузка (https://nodemon.io/)
+# https://github.com/remy/nodemon#nodemon
+
+npm install -g nodemon
+or
+npm install --save-dev nodemon
+------------------------------------
+# bower - пакетный менеджер для web (https://bower.io/)
+npm install -g bower
+bower init
+bower install <package> --save
+------------------------------------
+
+

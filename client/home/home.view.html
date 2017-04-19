@@ -1,0 +1,35 @@
+<navigation></navigation>
+<div class="container" ng-show="navvm.isLoggedIn">
+  <page-header content="vm.pageHeader"></page-header>
+  
+  <div class="divider"></div>
+    <div class="section">
+      <h6>Уважаемый, {{vm.currentUser.name}}, ваш баланс: {{vm.currentUser.account}} ед.</h6>
+        <button class="btn waves-effect waves-light light-green" ng-click="vm.doRefill()" name="action">Пополнить
+        </button>
+    </div>
+   
+  <div class="divider"></div>
+  <div class="section">
+    <h5>Состояние заказа</h5>
+      <button class="btn waves-effect waves-light light-green" ng-click="vm.doAddDish()" name="action">Добавить
+      </button>
+  </div>
+
+  <div ng-show="vm.isShowListDish">
+    <div class="divider"></div>
+    <div class="row">
+      <h5>Список блюд</h5>
+      <div ng-repeat="menuItem in vm.menuList | orderBy:'price'">
+        <img src="{{menuItem.image}}" height="50" alt=""/>
+        <span>{{menuItem.title}} ({{menuItem.price}}ye.)</span>
+       
+        <div class="divider"></div>
+      </div>
+        
+      
+    </div>
+  </div>
+
+  <footer-page></footer-page>
+</div>
