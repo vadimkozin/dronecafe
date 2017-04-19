@@ -6,7 +6,7 @@
   "repository": "https://github.com/vadimkozin/droncafe",
   "license": "MIT",
   "scripts": {
-    "postinstall": "bower install",
+    "postinstall": "./node_modules/.bin/bower install",
     "start": "node ./bin/www"
   },
   "engines": {
@@ -19,6 +19,7 @@
     "angular-socket-io": "^0.7.0",
     "body-parser": "~1.17.1",
     "bootstrap": "^3.3.7",
+    "bower": "^1.8.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "dotenv": "^4.0.0",
