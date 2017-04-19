@@ -3,10 +3,19 @@
   "private": true,
   "version": "0.0.1",
   "description": "Diplom project 'DronCafe'",
-  "repository": "https://github.com/vadimkozin/droncafe",
+  "repository": { 
+    "type": "git",
+    "url": "https://github.com/vadimkozin/droncafe",
+    "bugs": {
+      "url": "https://github.com/vadimkozin/droncafe/issues"
+    },
+    "homepage": "https://afternoon-shelf-16477.herokuapp.com"
+  },
   "license": "MIT",
+  "author": "Punnett Square",
+  "homepage": "https://afternoon-shelf-16477.herokuapp.com",
   "scripts": {
-    "postinstall": "./node_modules/.bin/bower install",
+    "postinstall": "./node_modules/bower/bin/bower cache clean && ./node_modules/bower/bin/bower install",
     "start": "node ./bin/www"
   },
   "engines": {
@@ -30,8 +39,5 @@
     "pug": "~2.0.0-beta11",
     "serve-favicon": "~2.4.2",
     "socket.io": "^1.7.3"
-  },
-  "devDependencies": {
-    "bower": "^1.8.0"
   }
 }
