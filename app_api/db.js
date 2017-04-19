@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
 let shutdownMongoose;
-let dbURI = 'mongodb://localhost/DroneCafe';
+let dbURI = 'mongodb://localhost/dronecafe';
 if (process.env.NODE_ENV === 'production') {
     dbURI = process.env.MONGOLAB_URI;
 }
