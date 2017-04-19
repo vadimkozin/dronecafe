@@ -9,8 +9,8 @@
 ```bash
     git clone https://github.com/vadimkozin/droncafe 
     cd droncafe
-    node load-data-to-db
     npm install
+    node load-data-to-db
     npm start
     http://localhost:3000
 ```
