@@ -4,9 +4,10 @@
     .module('cafeApp')
     .controller('kitchenCtrl', kitchenCtrl);
 
-  kitchenCtrl.$inject = ['$location','authentication','mySocket'];
-  function kitchenCtrl($location, authentication, mySocket) {
+  kitchenCtrl.$inject = ['$location','authentication','mySocket', 'loggingService'];
+  function kitchenCtrl($location, authentication, mySocket, loggingService ) {
     let vm = this;
+    const log = loggingService.log;
     
     vm.pageHeader = {
       title: 'Кухня',

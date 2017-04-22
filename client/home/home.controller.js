@@ -4,13 +4,41 @@
     .module('cafeApp')
     .controller('homeCtrl', homeCtrl);
 
- homeCtrl.$inject = ['$scope', '$location','authentication','mySocket'];
-  function homeCtrl($scope, $location, authentication, mySocket) {
+ homeCtrl.$inject = ['$scope', '$location', 'authentication', 'mySocket', 'order', 'loggingService'];
+  function homeCtrl($scope, $location, authentication, mySocket, order, loggingService) {
+    
     let vm = this;
+    const log = loggingService.log;
 
     // текущие значения аутентификации
     vm.isLoggedIn = authentication.isLoggedIn();
     vm.currentUser = authentication.currentUser();
+
+    // перенаправим на страницу входа, если пользователь еще не залогировался 
+    if (!vm.isLoggedIn) {
+      $location.path('/login');
+    }
+    
+    // текущий заказ
+    vm.updateOrder = function() {
+      order.getOrderByUserId(vm.currentUser._id, (err, data) => {
+        log('order:', data);
+        vm.currentOrder = data;
+        vm.updateSummaOrder();
+      });
+    };
+    vm.updateOrder();
+    
+    // сумма по заказу
+    vm.updateSummaOrder = function() {
+      vm.summaOrder = 0;
+      if (vm.currentOrder) {
+          vm.currentOrder.dishes.forEach((v) => {
+            vm.summaOrder += v.dish.price * v.count;
+        }); 
+      }
+    }
+  
 
     // когда асинхронно пополним счёт, вот оно и пригодиться
     $scope._updateCurrentUser = function() {
@@ -20,16 +48,21 @@
       })
     }
 
-    // перенаправим на страницу входа, если пользователь еще не залогировался 
-    if (!vm.isLoggedIn) {
-      $location.path('/login');
-    }
+    // ошибки
+    vm.showError = function (error) {
+      $scope.$apply(function() {
+        vm.message = error.message;
+      });
+    };
+
 
     // что-то пишем в шапке
     vm.pageHeader = {
       title: 'Добро пожаловать в кафе!',
       subtitle: 'Сделайте заказ'
     };
+
+
 
     // пополнить баланс
     vm.doRefill = function() {
@@ -56,18 +89,13 @@
 
 
 
-    // ошибки
-    vm.showError = function (error) {
-      $scope.$apply(function() {
-        vm.message = error.message;
-      });
-    };
 
     // ДОБАВЛЕНИЕ БЛЮД к ЗАКАЗУ
     vm.isShowListDish =  false;
+
     
-    // добавить блюдо
-    vm.doAddDish = function() {
+    // показать меню для добавления блюд к заказу 
+    vm.addToOrder = function() {
       vm.isShowListDish = true;
 
       mySocket.on('getmenu', function(data) {
@@ -78,13 +106,34 @@
         if (data.menuList) {          
           mySocket.removeListener('getmenu');
           vm.menuList = data.menuList;
-          console.log(data.menuList); 
+          log(data.menuList); 
         }
 
       });
       mySocket.emit('getmenu');
 
-    } // end doAddDish
+    } // end addToOrder
+
+
+    // добавить одно блюдо к заказу
+    vm.addDishToOrder = function(dishId) {
+      log(dishId);
+      let orderId = vm.currentOrder ? vm.currentOrder._id : null;
+      let obj = {dishId:dishId, userId:vm.currentUser._id, orderId:orderId};
+      log('obj:', obj);
+      order.addDishToOrder(obj, (err, data) => {
+        log('home.controller.add_dish_to_order::::', data);
+        if (err) {
+          log('home.controller.add_dish_to_order:', err);
+          return;
+        }
+        if (data) {
+          log('DATA:::', data);
+          vm.updateOrder();
+        }
+      });
+      
+    } // end addDishToOrder
 
   } // end homeCtrl
 

@@ -58,21 +58,27 @@ q.userRechargeAccount(user, -2000.1, (err, data) => {
 });
 */
 
-// размещаем новый заказ
-const userId = '58ef384aa0826eaeca6a60d2';
-const dishId = '58ef458a44acbab651226191';
-let order = {userId, dishId, stateId:100};
+
 /*
+// размещаем новый заказ
+const userId = '58f78dbf4ef83e0566a8450f';
+//const dishes = [{dishId:'58f7ce5f5474c12612135e61', count:1}];
+const dishId='58f7ce5f5474c12612135e61';
+let order = {userId, dishId, stateId:1};
+
 q.orderOpen(order, (err, data) => {
     if (err) {
        console.log('ERROR_ORDER_NEW: %s', err.message); 
+       console.log(err);
     }
     if (data) {
         console.log('new order:', data);
     }
 });
+
 */
 
+/*
 // Перевод заказа в другое состояние
 const orderId = '58ef757389281ec91df7b91f';
 q.orderSetState(orderId, 5, (err, data) => {
@@ -83,7 +89,91 @@ q.orderSetState(orderId, 5, (err, data) => {
         console.log('set_state_order:', data.stateId); // data - новый изменённый объект
     }
 });
+*/
+
+
+/*
+
+// получить информацию по заказу
+//const orderId = null;
+const orderId = '58fa09c660ddeff46d23065d';
+q.getOrder(orderId, (err, data) => {
+    if (err) {
+        console.log('ERROR_GET_ORDER: %s', err);
+    }
+    if (data) {
+        console.log('order::', data);          // весь заказ
+        console.log('-----');
+        console.log('dishes_in_order::', data.dishes);   // инфо по блюдам в заказе
+        
+    } else {
+        console.log('Такой заказ не существует', data);
+    }
+
+});
+*/
+/*
+// получить информацию по заказу по коду закзазчика
+const userId = '58f78dbf4ef83e0566a8450f---';
+q.getOrderByUserId(userId, (err, data) => {
+    if (err) {
+        console.log('ERROR_GET_ORDER_BY_USERID: %s', err);
+    }
+    if (data) {
+        console.log('order_by_user_id::', data);          // весь заказ
+        
+    } else {
+        console.log('Такой заказ не существует', data);
+    }
+
+});
+*/
+
+
+// добавить блюдо в заказ
+//let obj = {userId:'58f78dbf4ef83e0566a8450f', dishId:'58f7ce5f5474c12612135e66', orderId:'58fa1443d1017efcdce1463e'};
+let obj = {dishId: "58f7ce5f5474c12612135e76", userId: "58f78dbf4ef83e0566a8450f", orderId: "58fa4cf9dcd10e20595949a4"}
+q.addDishToOrder(obj, (err,data) => {
+    if (err) {
+        console.log('ERROR_ADD_DISH: %s', err);
+        return;
+    }
+    if (data) {
+        console.log('add_dish_to_order:', data); // data - объект Order
+    }
+
+});
+
+
+
+/*
+// вычесть блюдо из заказа
+let obj = {dishId:'58f7ce5f5474c12612135e63', orderId:'58fa1443d1017efcdce1463e'};
+q.subtractDishFromOrder(obj, (err, data) => {
+    if (err) {
+        console.log('ERROR_SUBSTRACT_DISH: %s', err);
+        return;
+    }
+    if (data) {
+        console.log('substract_dish_from_order:', data); // data - объект Order
+    }
+});
+*/
+/*
+// удаление заказа
+q.deleteOrder('58f8edc83ac9189143117d4b', (err, data) => {
+    if (err) {
+        console.log('ERROR_DELETE_ORDER: %s', err);
+        return;
+    }
+    if (data) {
+        console.log('delete_order:', data); // data - объект Order
+    }
+});
+*/
 
 setTimeout(() => {
     mongoose.connection.close();
-}, 2000);
+}, 1000);
+
+

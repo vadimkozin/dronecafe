@@ -58,7 +58,45 @@ function go(server) {
                     console.log('GETMENU_DATA:', data);
                 }
             });
-        });        
+        });
+
+
+        //добавление блюда к заказу
+         socket.on('addDishToOrder', function(obj) {
+            console.log('connect.add_dish_to_order:', obj);
+            q.addDishToOrder(obj, (err, data) => {    
+                if (err) {
+                    console.log('ERROR_:(%d) %s', err.code, err.message);
+                    let message = {err: err, message: 'Ошибка добавления блюда к заказу.'};
+                    socket.emit('addDishToOrder', message);
+                    return;
+                }
+                if (data) {
+                    socket.emit('addDishToOrder', {data: data});
+                    console.log('connect.add_dish_to_order_DATA:', data);
+                }
+
+            });
+         });
+
+        // Возвращает всю инфо по заказу по коду заказчика
+         socket.on('getOrderByUserId', function(obj) {
+             console.log('get_order_by_userid:', obj);
+            q.getOrderByUserId(obj.userId, (err, data) => {
+                if (err) {
+                    console.log('ERROR_:(%d) %s', err.code, err.message);
+                    let message = {err: err, message: 'Ошибка определения инфо о заказе.'};
+                    socket.emit('getOrderByUserId', message);
+                    return;
+                }
+                if (data) {
+                    socket.emit('getOrderByUserId', data);
+                    console.log('getOrderByUserId_DATA:', data);
+                }
+
+            });
+         });
+                 
 
     });
 }

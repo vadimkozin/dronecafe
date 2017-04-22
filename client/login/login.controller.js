@@ -4,9 +4,10 @@
     .module('cafeApp')
     .controller('loginCtrl', loginCtrl);
 
-  loginCtrl.$inject = ['$location','authentication','mySocket'];
-  function loginCtrl($location, authentication, mySocket) {
+  loginCtrl.$inject = ['$location', 'authentication', 'mySocket', 'loggingService'];
+  function loginCtrl($location, authentication, mySocket, loggingService) {
     let vm = this;
+    const log = loggingService.log;
     
     vm.pageHeader = {
       title: 'Добро пожаловать',
@@ -34,13 +35,13 @@
       vm.formError = "";
       
       mySocket.on('login', function(data) {
-        console.log(data);
+        log(data);
         if (data.err) {
           vm.formError = data.message;
           mySocket.removeListener('login');
         }
         if (data._id) {
-          console.log("DATA:::::", data);
+          log("DATA:::::", data);
           authentication.saveToken(data.jwt);
           vm.user.name = "";
           vm.user.email = "";

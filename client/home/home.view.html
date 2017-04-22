@@ -1,34 +1,50 @@
 <navigation></navigation>
-<div class="container" ng-show="navvm.isLoggedIn">
+
+<div class="container" ng-if="navvm.isLoggedIn">
   <page-header content="vm.pageHeader"></page-header>
   
-  <div class="divider"></div>
-    <div class="section">
-      <h6>Уважаемый, {{vm.currentUser.name}}, ваш баланс: {{vm.currentUser.account}} ед.</h6>
-        <button class="btn waves-effect waves-light light-green" ng-click="vm.doRefill()" name="action">Пополнить
-        </button>
-    </div>
-   
+  <!-- Инфо про баланс -->
   <div class="divider"></div>
   <div class="section">
-    <h5>Состояние заказа</h5>
-      <button class="btn waves-effect waves-light light-green" ng-click="vm.doAddDish()" name="action">Добавить
-      </button>
+      <h6>Уважаемый, <big><strong>{{vm.currentUser.name}}</strong></big>, ваш баланс: {{vm.currentUser.account}} ед.</h6>
+        <button class="btn waves-effect waves-light light-green" ng-click="vm.doRefill()" name="action">Пополнить</button>
   </div>
 
-  <div ng-show="vm.isShowListDish">
-    <div class="divider"></div>
-    <div class="row">
-      <h5>Список блюд</h5>
-      <div ng-repeat="menuItem in vm.menuList | orderBy:'price'">
-        <img src="{{menuItem.image}}" height="50" alt=""/>
-        <span>{{menuItem.title}} ({{menuItem.price}}ye.)</span>
-       
-        <div class="divider"></div>
-      </div>
-        
-      
-    </div>
+  <!-- Состояние заказа --> 
+  <div class="divider"></div>
+  <div class="section">
+      <h5>Состояние заказа</h5>
+      <span>блюд: {{ vm.currentOrder.dishes.length }}  стоимость: {{ vm.summaOrder }}уе.</span>
+      <span ng-if="!vm.currentOrder">Вы еще ничего не заказали.</span> <br />
+      <button class="btn waves-effect waves-light light-green" ng-click="vm.addToOrder()" >Добавить</button>
+  </div>
+  <div ng-if="vm.currentOrder">
+    <ul class="collection with-header">
+        <li class="collection-header"><h4>Ваш текущий заказ</small></h4></li>
+        <li ng-repeat="dishOne in vm.currentOrder.dishes" class="collection-item">
+          <div>{{dishOne.dish.title}} ({{ dishOne.dish.price }}ye. {{ dishOne.count }}шт. = {{ dishOne.dish.price * dishOne.count }}ye.)
+            <a href="" class="secondary-content">&nbsp;&nbsp;<i class="material-icons">send</i></a>
+          </div>
+        </li>
+    </ul>
+  </div>
+
+  <!-- Список блюд -->
+  <div ng-if="vm.isShowListDish">
+    <ul class="collection with-header">
+        <li class="collection-header"><h4>Список блюд</h4></li>
+        <li ng-repeat="menuItem in vm.menuList | orderBy:'price'" class="collection-item">
+          <div>{{menuItem.title}} ({{menuItem.price}}ye.)
+            <a href="" class="secondary-content">&nbsp;&nbsp;<i class="material-icons">send</i></a>
+            <a ng-if="vm.currentUser.account-menuItem.price > 0" href="" ng-click="vm.addDishToOrder(menuItem._id)" class="secondary-content">&nbsp;Заказать!</a>
+
+            <span ng-if="vm.currentUser.account-menuItem.price <= 0" class="secondary-content">Пополните баланс на {{ menuItem.price - vm.currentUser.account }}</span>
+
+            <span ng-if="vm.currentUser.account-menuItem.price <= 0" class="secondary-content">Пополните баланс на {{ menuItem.price - vm.currentUser.account }}</span>
+            
+          </div>
+        </li>
+    </ul>
   </div>
 
   <footer-page></footer-page>

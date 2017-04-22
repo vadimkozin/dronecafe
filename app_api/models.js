@@ -17,7 +17,7 @@ class State {
 let dishShema = new mongoose.Schema({
     title: {type:String, required:true},
     image: {type:String, required:true},
-    id: {type:Number, required:true},
+    id: {type:Number, required:true, unique: true},
     rating: {type:Number, required:true},
     ingredients: [String],
     price: {type:Number, required:true}
@@ -59,10 +59,17 @@ userShema.methods.generateJwt = function() {
     }, process.env.JWT_SECRET);
 };
 
+// схема: количество блюд в заказе
+let dishItem = new mongoose.Schema({
+    dish: dishShema,
+    count: {type: Number,  "default":1}
+    },{ _id: false }
+);
+
 // схема: Заказ
 let orderShema = new mongoose.Schema({
-    userId: {type: mongoose.SchemaTypes.ObjectId, required:true},       // кто заказал
-    dishes: [dishShema],                                                // что заказал    
+    userId: {type: mongoose.SchemaTypes.ObjectId, required:true, index:true},       // кто заказал
+    dishes: [dishItem],                                                 // что заказал (список блюд)
     stateId: {type: Number, min:1, max:5, required:true, "default":1},  // состояние заказа
     startCook: {type: Date, "default": Date.now},                       // начали готовить
     endCook: {type: Date, "default": new Date("1111/11/11 00:00:00")},  // закончили готовить
