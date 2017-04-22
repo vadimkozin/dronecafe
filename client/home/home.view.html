@@ -14,7 +14,7 @@
   <div class="divider"></div>
   <div class="section">
       <h5>Состояние заказа</h5>
-      <span>блюд: {{ vm.currentOrder.dishes.length }}  стоимость: {{ vm.summaOrder }}уе.</span>
+      <span ng-if="vm.currentOrder">блюд: {{ vm.currentOrder.dishes.length }}  стоимость: {{ vm.summaOrder }}уе.</span>
       <span ng-if="!vm.currentOrder">Вы еще ничего не заказали.</span> <br />
       <button class="btn waves-effect waves-light light-green" ng-click="vm.addToOrder()" >Добавить</button>
   </div>
