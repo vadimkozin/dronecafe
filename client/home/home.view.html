@@ -9,6 +9,8 @@
   <div class="section">
       <h6>Уважаемый, <big><strong>{{vm.currentUser.name}}</strong></big>, ваш баланс: {{vm.currentUser.account}} ед.</h6>
         <button class="btn waves-effect waves-light light-green" ng-click="vm.doRefill()" name="action">Пополнить</button>
+        <button class="btn waves-effect waves-light light-green" ng-click="vm.doRefill(-100)" name="action">Уменьшить</button>
+        
   </div>
 
   <!-- Состояние заказа --> 

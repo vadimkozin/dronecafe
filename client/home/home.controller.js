@@ -74,7 +74,9 @@
     };
 
     // пополнить баланс
-    vm.doRefill = function() {
+    vm.doRefill = function(summa) {
+
+      summa = summa || 100;
 
       vm.formError = "";
       
@@ -92,7 +94,7 @@
       });
       mySocket.emit('refill', {
         id: vm.currentUser._id,
-        summa: 100,   // по заданию увеличиваем на 100
+        summa: summa,   // по заданию увеличиваем на 100
       });
     }
 

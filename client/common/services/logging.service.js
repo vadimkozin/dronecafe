@@ -6,8 +6,8 @@
 
   function loggingService () {
       return {
-          log_: console.log,
-          log: function(){} 
+          log: console.log,
+          log_: function(){} 
       }
   }
   })();
