@@ -6,7 +6,9 @@
 
     stateService.$inject = ['$window', 'mySocket', 'loggingService'];
     function stateService ($window, mySocket, loggingService) {
+        
         const log = loggingService.log;
+
         /**
          * Запрос списка имён состояний заказа
          * @param {Fn} callback 

@@ -17,7 +17,7 @@ class State {
 let dishShema = new mongoose.Schema({
     title: {type:String, required:true},
     image: {type:String, required:true},
-    id: {type:Number, required:true, unique: true},
+    id: {type:Number, required:true},    //unique: true
     rating: {type:Number, required:true},
     ingredients: [String],
     price: {type:Number, required:true},
@@ -64,7 +64,7 @@ userShema.methods.generateJwt = function() {
 let dishItem = new mongoose.Schema({
     dish: dishShema,
     count: {type: Number,  "default":1}
-    },{ _id: false }
+    } ,{ _id: false }
 );
 
 // схема: Заказ

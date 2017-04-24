@@ -7,6 +7,7 @@ const Dish = require ('./models').Dish;
 const User = require ('./models').User;
 const Order = require ('./models').Order;
 const State = require ('./models').State;
+const log = require('../server/lib/logging').logging().log;
 
 
 // собирает вместе JWT + данные о пользователе
@@ -135,10 +136,14 @@ module.exports.getDishOne = function(id, callback) {
  */
  module.exports.orderOpen = function(obj, callback) {
     Dish.findById(obj.dishId, function(err, dishOne) {
+        log('module.exports.orderOpen_err:', err);
+        log('module.exports.orderOpen_data:', dishOne);
+        
         if (err) {
             return callback(err, null);
         }
         if (dishOne) {
+            log('module.exports.orderOpen_userId:', obj.userId )
             Order.create({userId:obj.userId, dishes:[{dish:dishOne}]}, function(err, doc) {
                 if (err) {
                     callback(err, null);
@@ -197,9 +202,9 @@ module.exports.getOrderByUserId = function(userId, callback) {
 module.exports.addDishToOrder = function(obj, callback) {
     self=this;
     // если заказа еще нет, то открываем заказ
-    console.log('query.add_dish_to_order:', obj);
+    log('query.add_dish_to_order:', obj);
     if (!obj.orderId) {
-        console.log('???');
+        log('???');
         this.orderOpen({userId:obj.userId, dishId:obj.dishId}, (err, doc) => {
             if (err) {
                 callback(err, null);
@@ -344,4 +349,21 @@ function orderClose(orederId, callback) {
         callback(err, doc);
     });
 
+}
+
+//  КУХНЯ
+
+/**
+ * Возвращает список заказов
+ * @param {Fn} callback (err, docs) - результат
+ */
+module.exports.orderList = function(callback) {
+    Order.find({}, function(err, docs){
+     
+        if (err) {
+            callback(err, null);
+            return;
+        }
+        callback(err, docs);
+    });
 }
