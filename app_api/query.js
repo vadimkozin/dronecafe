@@ -6,6 +6,8 @@ require ('./db');   //пока
 const Dish = require ('./models').Dish;
 const User = require ('./models').User;
 const Order = require ('./models').Order;
+const State = require ('./models').State;
+
 
 // собирает вместе JWT + данные о пользователе
 function _collectUserData(user) {
@@ -63,6 +65,14 @@ module.exports.userList = function(callback) {
         }
         callback(err, docs);
     });
+}
+
+/**
+ * Возвращает список названий состояний заказа
+ * @param {Fn} callback (err, docs) - результат
+ */
+module.exports.stateList = function(callback) {
+    callback(null, State.stateNames);
 }
 
 /**

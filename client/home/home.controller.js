@@ -4,8 +4,8 @@
     .module('cafeApp')
     .controller('homeCtrl', homeCtrl);
 
- homeCtrl.$inject = ['$scope', '$location', 'authentication', 'mySocket', 'order', 'loggingService'];
-  function homeCtrl($scope, $location, authentication, mySocket, order, loggingService) {
+ homeCtrl.$inject = ['$scope', '$location', 'authentication', 'mySocket', 'order', 'loggingService', 'stateService'];
+  function homeCtrl($scope, $location, authentication, mySocket, order, loggingService, stateService) {
     
     let vm = this;
     const log = loggingService.log;
@@ -18,6 +18,12 @@
     if (!vm.isLoggedIn) {
       $location.path('/login');
     }
+
+    // список названий состояний заказа
+    stateService.getListState((err, data) => {
+      vm.stateNames = data;
+      log('vm.stateNames:', vm.stateNames);
+    });
     
     // текущий заказ
     vm.updateOrder = function() {
@@ -76,7 +82,7 @@
     // пополнить баланс
     vm.doRefill = function(summa) {
 
-      summa = summa || 100;
+      summa = summa || 100;   // по заданию увеличиваем на 100уе
 
       vm.formError = "";
       
@@ -94,7 +100,7 @@
       });
       mySocket.emit('refill', {
         id: vm.currentUser._id,
-        summa: summa,   // по заданию увеличиваем на 100
+        summa: summa,   
       });
     }
 

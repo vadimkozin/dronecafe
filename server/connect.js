@@ -96,6 +96,25 @@ function go(server) {
 
             });
          });
+
+        // возвращает список названий состояния заказа 
+        socket.on('getListState', function(obj) {
+            console.log('get_list_state:', obj);
+            q.stateList((err, data) => {
+                if (err) {
+                    console.log('ERROR_:(%d) %s', err.code, err.message);
+                    let message = {err: err, message: 'Ошибка определения списка названий состояния заказа.'};
+                    socket.emit('getListState', message);
+                    return;
+                }
+                if (data) {
+                    socket.emit('getListState', {stateNames: data});
+                    console.log('getListState_DATA:', data);
+                }
+
+            });
+        });
+
                  
 
     });

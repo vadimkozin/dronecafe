@@ -20,7 +20,8 @@ let dishShema = new mongoose.Schema({
     id: {type:Number, required:true, unique: true},
     rating: {type:Number, required:true},
     ingredients: [String],
-    price: {type:Number, required:true}
+    price: {type:Number, required:true},
+    stateId: {type: Number, min:1, max:5, required:true, "default":1}
 }, {versionKey: false}
 );
 
