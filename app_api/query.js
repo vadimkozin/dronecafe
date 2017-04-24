@@ -204,7 +204,7 @@ module.exports.addDishToOrder = function(obj, callback) {
     // если заказа еще нет, то открываем заказ
     log('query.add_dish_to_order:', obj);
     if (!obj.orderId) {
-        log('???');
+        log('obj.orderId', obj.orderId);
         this.orderOpen({userId:obj.userId, dishId:obj.dishId}, (err, doc) => {
             if (err) {
                 callback(err, null);
@@ -357,13 +357,14 @@ function orderClose(orederId, callback) {
  * Возвращает список заказов
  * @param {Fn} callback (err, docs) - результат
  */
-module.exports.orderList = function(callback) {
+module.exports.getOrderList = function(callback) {
     Order.find({}, function(err, docs){
      
         if (err) {
             callback(err, null);
             return;
         }
+        //log('module.exports.getOrderList_docs:', docs);
         callback(err, docs);
     });
 }

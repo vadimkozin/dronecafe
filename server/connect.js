@@ -115,6 +115,22 @@ function go(server) {
             });
         });
 
+        // возвращает все заказы
+        socket.on('getOrderList', function(msg) {
+            q.getOrderList((err, data) => {
+                if (err) {
+                    console.log('ERROR_:(%d) %s', err.code, err.message);
+                    let message = {err: err, message: 'Ошибка получения списка заказов.'};
+                    socket.emit('getOrderList', message);
+                    return;
+                }
+                if (data) {
+                    socket.emit('getOrderList', { orderList: data });
+                    console.log('GET_ORDER_LIST:', data);
+                }
+            });
+        });     
+
                  
 
     });

@@ -35,7 +35,7 @@
         /**
          * Возвращает всю инфо по заказу
          * @param {ObjectId} userId код заказчика
-         * @param {Fn} callback (err, data) - результат, data = {} 
+         * @param {Fn} callback (err, data) - результат
          */
         let getOrderByUserId = function(userId, callback) {
             mySocket.on('getOrderByUserId', function(data) {
@@ -56,9 +56,31 @@
 
         };
 
+        /**
+         * Возвращает все заказы
+         * @param {Fn} callback (err, data) - результат 
+         */
+        let getOrderList = function(callback) {
+            mySocket.on('getOrderList', function(data) {
+                if (data.err) {
+                    mySocket.removeListener('getOrderList');
+                    callback(data.err, null);
+                }
+                if (data.orderList) {
+                    mySocket.removeListener('getOrderList'); 
+                    callback(null, data.orderList);
+                }
+
+            });
+
+            mySocket.emit('getOrderList'); 
+
+        };
+
         return {
             addDishToOrder : addDishToOrder,
             getOrderByUserId : getOrderByUserId,
+            getOrderList: getOrderList
         };
 
     }

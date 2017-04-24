@@ -129,7 +129,7 @@ q.getOrderByUserId(userId, (err, data) => {
 });
 */
 
-
+/*
 // добавить блюдо в заказ
 //let obj = {userId:'58f78dbf4ef83e0566a8450f', dishId:'58f7ce5f5474c12612135e66', orderId:'58fa1443d1017efcdce1463e'};
 let obj = {dishId: "58f7ce5f5474c12612135e76", userId: "58f78dbf4ef83e0566a8450f", orderId: "58fa4cf9dcd10e20595949a4"}
@@ -144,7 +144,7 @@ q.addDishToOrder(obj, (err,data) => {
 
 });
 
-
+*/
 
 /*
 // вычесть блюдо из заказа
@@ -171,6 +171,17 @@ q.deleteOrder('58f8edc83ac9189143117d4b', (err, data) => {
     }
 });
 */
+
+// список заказов
+q.getOrderList((err, data) => {
+    if (err) {
+        console.log('ERROR_:(%d) %s', err.code, err.message);
+        return;
+    }
+    if (data) {
+        console.log('DATA:', data);
+    }    
+});
 
 setTimeout(() => {
     mongoose.connection.close();

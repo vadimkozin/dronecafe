@@ -46,7 +46,7 @@
                
                 <span ng-if="vm.switch.isShowDetails($index)"><a class="waves-effect waves-teal" ng-click="vm.switch.toggleShowDetails($index)"><i class="material-icons">expand_more</i></a>{{ menuItem.title }} ({{ menuItem.price }}ye.) </span>
                     
-                <a ng-if="vm.currentUser.account-menuItem.price > 0 && !vm.switch.isShowDetails($index)" href="" ng-click="vm.addDishToOrder(menuItem._id)" class="secondary-content"><i class="small material-icons">add_circle</i></a>
+                <a ng-if="vm.currentUser.account-menuItem.price > 0 && !vm.switch.isShowDetails($index)" href="" ng-click="vm.addDishToOrder(menuItem._id);vm.doRefill(-menuItem.price)" class="secondary-content"><i class="small material-icons">add_circle</i></a>
                 <!--
                 <a ng-if="vm.currentUser.account-menuItem.price > 0 && !vm.switch.isShowDetails($index)" href="" ng-click="vm.addDishToOrder(menuItem._id)" class="secondary-content">&nbsp;Заказать</a>
                 -->
