@@ -1,3 +1,4 @@
+
 <navigation></navigation>
 
 <div class="container" ng-if="navvm.isLoggedIn">
@@ -33,19 +34,31 @@
   <div ng-if="vm.isShowListDish">
     <ul class="collection with-header">
         <li class="collection-header"><h4>Список блюд</h4></li>
-        <li ng-repeat="menuItem in vm.menuList | orderBy:'price'" class="collection-item">
-          <div>{{menuItem.title}} ({{menuItem.price}}ye.)
-            <a href="" class="secondary-content">&nbsp;&nbsp;<i class="material-icons">send</i></a>
-            <a ng-if="vm.currentUser.account-menuItem.price > 0" href="" ng-click="vm.addDishToOrder(menuItem._id)" class="secondary-content">&nbsp;Заказать!</a>
+        <li ng-repeat="menuItem in vm.menuList | orderBy:'title'"  class="collection-item" >
+          <!-- <div> {{menuItem.title}} ({{menuItem.price}}ye.) -->
+          <!-- <a href="" class="secondary-content">&nbsp;&nbsp;<i class="material-icons">send</i></a> -->
 
-            <span ng-if="vm.currentUser.account-menuItem.price <= 0" class="secondary-content">Пополните баланс на {{ menuItem.price - vm.currentUser.account }}</span>
+          <div> 
+                <span ng-if="!vm.switch.isShowDetails($index)" ><a class="waves-effect waves-teal" ng-click="vm.switch.toggleShowDetails($index)"><i class="material-icons">chevron_right</i></a>{{ menuItem.title }} ({{ menuItem.price }}ye.) </span>
+               
+                <span ng-if="vm.switch.isShowDetails($index)"><a class="waves-effect waves-teal" ng-click="vm.switch.toggleShowDetails($index)"><i class="material-icons">expand_more</i></a>{{ menuItem.title }} ({{ menuItem.price }}ye.) </span>
+                    
+                <a ng-if="vm.currentUser.account-menuItem.price > 0 && !vm.switch.isShowDetails($index)" href="" ng-click="vm.addDishToOrder(menuItem._id)" class="secondary-content"><i class="small material-icons">add_circle</i></a>
+                <!--
+                <a ng-if="vm.currentUser.account-menuItem.price > 0 && !vm.switch.isShowDetails($index)" href="" ng-click="vm.addDishToOrder(menuItem._id)" class="secondary-content">&nbsp;Заказать</a>
+                -->
+                <span ng-if="vm.currentUser.account-menuItem.price <= 0" class="secondary-content">Пополните баланс на {{ menuItem.price - vm.currentUser.account }}ye.</span>
+                
+              <!-- Детально по блюду -->
+              <div ng-if="vm.switch.isShowDetails($index)">
+                  <dish-details content="menuItem" pvm="vm"></dish-details>
+              </div>
 
-            <span ng-if="vm.currentUser.account-menuItem.price <= 0" class="secondary-content">Пополните баланс на {{ menuItem.price - vm.currentUser.account }}</span>
-            
           </div>
         </li>
     </ul>
   </div>
 
   <footer-page></footer-page>
+
 </div>

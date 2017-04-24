@@ -1,0 +1,29 @@
+<!--
+pvm -> parent vm 
+content = {
+_id:58f7ce5f5474c12612135e61
+title:Cheese Popovers
+image:https://spoonacular.com/recipeImages/Cheese-Popovers-517616.jpg
+id:517616
+rating:188
+price:27
+ingredients:Array
+}
+-->
+  <div class="row">
+    <div class="col s12 m6">
+      <div class="card big">
+        <div class="card-image">
+          <img src="{{ content.image }}">
+          <span class="card-title">{{ content.title }}</span>
+          <a ng-if="pvm.currentUser.account-content.price > 0" href="" ng-click="pvm.addDishToOrder(content._id)"  class="btn-floating btn-large halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+        </div>
+        <div class="card-content">
+          <p> <strong>price</strong> : {{content.price }}ye. <strong>&nbsp;rating</strong> : {{ content.rating }} <br />
+              <strong>ingredients :</strong> {{ content.ingredients | array }}
+           </p>
+        </div>
+      </div>
+    </div>
+  </div>
+

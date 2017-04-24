@@ -62,7 +62,16 @@
       subtitle: 'Сделайте заказ'
     };
 
-
+    // показать/скрыть - Подробно по блюду
+    vm.switch = {
+      _ob: {},
+      toggleShowDetails(index) {
+         this._ob[index] = this._ob[index] == true ? false : true;
+      },
+      isShowDetails(index) {
+        return this._ob[index];
+      }
+    };
 
     // пополнить баланс
     vm.doRefill = function() {
