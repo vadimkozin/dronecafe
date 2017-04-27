@@ -1,11 +1,36 @@
-      <ul class="collection with-header">
-        <li class="collection-header"><h4>Заказано</h4></li>
-        <li ng-repeat="dishOne in pvm.dishes | orderBy:'dish.title' "  class="collection-item" >
-        <div>
-            <span>{{ dishOne.dish.title }}</span>
-            <a class="waves-effect waves-teal" ng-click="vm.switch.toggleShowDetails($index)">Начать готовить</a>
-        </div>            
-      </ul>
+<!--
+pvm.dish: {
+    id:580400
+    image:"https://spoonacular.com/recipeImages/a-summer-grilling-feast-to-beat-the-heat-580400.jpg"
+    ingredients: Array(20)
+    price:7
+    rating:12
+    stateId:1
+    title:"a Summer Grilling Feast to Beat the Heat"
+    _id:"58f7ce5f5474c12612135e8d"  
+
+    count:3
+    userEmail:"vadim@gmail.ru"
+    userId:"58f78dbf4ef83e0566a8450f"
+    userName:"vadim",
+    orderId: 58fe1629352d81f9cdd94f62"
+}
+-->
+
+<ul class="collection with-header">
+<li class="collection-header"><h4>{{ content.header }}</h4></li>
+<li ng-repeat="oneDish in pvm.dishes | dishStateOn:content.stateDish | orderBy:'title' "  class="collection-item" >
+    <div>
+        <span>{{ oneDish.title }} <br /> ({{ oneDish.count | unit }}) ({{ oneDish.userEmail }}) ({{content.stateDish}})</span>
+            
+        <a class="waves-effect waves-teal" ng-click="pvm.nextState(oneDish,content.nextState)">{{ content.bottomTitle }}</a>
+    </div> 
+</li>           
+</ul>
+
+
+
+
 
 
                

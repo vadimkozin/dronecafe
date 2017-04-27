@@ -1,3 +1,5 @@
+// общение через Socket.io по вопросам заказа/блюд
+
 (function () {
 
   angular
@@ -77,10 +79,58 @@
 
         };
 
+
+        /**
+         * Возвращает все заказы и заказчиков
+         * @param {Fn} callback (err, data) - результат 
+         */
+        let getOrderListAndUsers = function(callback) {
+            mySocket.on('getOrderListAndUsers', function(data) {
+                if (data.err) {
+                    mySocket.removeListener('getOrderListAndUsers');
+                    callback(data.err, null);
+                }
+                if (data.orderList) {
+                    mySocket.removeListener('getOrderListAndUsers'); 
+                    callback(null, {orderList: data.orderList, userList: data.userList});
+                }
+
+            });
+
+            mySocket.emit('getOrderListAndUsers'); 
+
+        };
+
+        /**
+         * Перевод блюда в другое состояние (1-5)
+         * @param {*} obj {orderId, dishId, stateId} код заказа, код блюда, новое состояние
+         * @param {*} callback (err, data) - результат, где data-изменённый заказ
+         */
+        let dishSetState  = function(obj, callback) {
+            log('order.dishSetState_obj:', obj);
+            mySocket.on('dishSetState', function(data) {
+                log('order.dishSetState_data:', data);
+                if (data.err) {
+                    mySocket.removeListener('dishSetState');
+                    callback(data.err, null);
+                }
+                if (data._id) {
+                    mySocket.removeListener('dishSetState'); 
+                    callback(null, data);
+                }
+
+            });
+
+            mySocket.emit('dishSetState', obj); 
+
+        }
+
         return {
             addDishToOrder : addDishToOrder,
             getOrderByUserId : getOrderByUserId,
-            getOrderList: getOrderList
+            getOrderList: getOrderList,
+            getOrderListAndUsers: getOrderListAndUsers,
+            dishSetState: dishSetState
         };
 
     }

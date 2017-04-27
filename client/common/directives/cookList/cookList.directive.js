@@ -9,7 +9,8 @@
       restrict: 'EA',
       scope: {
         content : '=content',
-        pvm: '=pvm'
+        pvm: '=pvm',
+        
       },
       templateUrl: '/common/directives/cookList/cookList.template.html'
     };

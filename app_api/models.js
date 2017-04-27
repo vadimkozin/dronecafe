@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 // состояние блюда
 class State {
-    static get stateNames() { return ['-','Заказано', 'Готовиться', 'Доставляется', 'Возникли сложности', 'Подано'];}
+    static get stateNames() { return ['-','Заказано', 'Готовится', 'Доставляется', 'Возникли сложности', 'Подано'];}
     static  getName(state) {return State.stateNames[state];} // имя состояния
     static get ordered() {return 1;}    // заказано
     static get cook() {return 2;}       // готовиться

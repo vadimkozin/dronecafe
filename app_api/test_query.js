@@ -90,7 +90,29 @@ q.orderSetState(orderId, 5, (err, data) => {
     }
 });
 */
-
+/*
+// Перевод блюда из заказа в другое состояние
+const orderId = '58fe1629352d81f9cdd94f62';
+const dishId = '58f7ce5f5474c12612135e6d';
+const stateId = 2;
+q.dishSetState(orderId, dishId, stateId, (err, data) => {
+    if (err) {
+        console.log('ERROR_SET_STATE_DISH: %s', err.errors.stateId.message);
+    }
+    if (data) {
+        console.log('set_state_dish:', data); // data - новый изменённый объект
+    }
+});
+*/
+// Перевод всех блюд в ОДНО состояние
+q.allDishesSetStateOn(1, (err, data) => {
+    if (err) {
+        console.log('ERROR_SET_ALL_DISH_TO_ONE_STATE: %s', err);
+    }
+    if (data) {
+        console.log('allDishesSetStateOn:', data); 
+    }  
+});
 
 /*
 
@@ -172,6 +194,7 @@ q.deleteOrder('58f8edc83ac9189143117d4b', (err, data) => {
 });
 */
 
+/*
 // список заказов
 q.getOrderList((err, data) => {
     if (err) {
@@ -182,6 +205,18 @@ q.getOrderList((err, data) => {
         console.log('DATA:', data);
     }    
 });
+
+// список заказов и заказчиков
+q.getOrderListAndUsers((err, data) => {
+    if (err) {
+        console.log('ERROR_:(%d) %s', err.code, err.message);
+        return;
+    }
+    if (data) {
+        console.log('DATA:', data);
+    }    
+});
+*/
 
 setTimeout(() => {
     mongoose.connection.close();

@@ -7,17 +7,21 @@
          <div class="col s12">
             <h5 class="center-align">This should be center aligned</h5>
          </div>
-        <!-- Заказано -->
+        <!-- Заказано     -->
         <div class="col s6">
             <h6 class="center-align">Заказано</h6>
-            <cook-list pvm="vm"></cook-list>
+            <cook-list content="vm.state.s1"  pvm="vm" ></cook-list>
         </div>
 
-        <!-- Готовится -->
+        <!-- Готовятся -->
         <div class="col s6">
-            <h6 class="center-align">Готовится</h6>
+            <h6 class="center-align">Готовятся</h6>
+            <cook-list content="vm.state.s2"  pvm="vm" ></cook-list>
+
         </div>
     </div>
+
+
 
     <footer-page></footer-page>
 </div>

@@ -21,7 +21,7 @@ ingredients:Array
           <a ng-if="pvm.currentUser.account-content.price > 0" href="" ng-click="pvm.addDishToOrder(content._id)"  class="btn-floating btn-large halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
         </div>
         <div class="card-content">
-          <p> <strong>price</strong> : {{content.price }}ye. <strong>&nbsp;rating</strong> : {{ content.rating }} <br />
+          <p> <strong>price</strong> : {{content.price | currency }} <strong>&nbsp;rating</strong> : {{ content.rating }} <br />
               <strong>ingredients :</strong> {{ content.ingredients | array }}
            </p>
         </div>

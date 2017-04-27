@@ -1,3 +1,4 @@
+// код состояния готовности в виде строки
 (function () {
     angular
     .module('cafeApp')

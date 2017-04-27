@@ -55,10 +55,17 @@ module.exports.userFindOneOrCreate = function(data, callback) {
 
 /**
  * Возвращает список пользователей в базе
+ * @param {Array} userList - список запрашиваемых пользователей ( если null - то вернуть всех )
  * @param {Fn} callback (err, docs) - результат
  */
-module.exports.userList = function(callback) {
-    User.find({}, function(err, docs){
+module.exports.getUserList = function(userList, callback) {
+    let find = {};
+
+    if (userList) {
+        find = {_id: {$in: userList} };
+    }
+
+    User.find(find, function(err, docs){
      
         if (err) {
             callback(err, null);
@@ -335,6 +342,67 @@ module.exports.orderSetState = function(orderId, stateId, callback) {
 }
 
 /**
+ * Перевод блюда в заказе в другое состояние (1-5)
+ * @param {OrderId} orderId - _id заказа
+ * @param {dishId} dishId - _id блюда
+ * @param {Number} stateId - новое состояние
+ * @param {Fn} callback (err, doc) - результат (в doc - новый изменённый объект)
+ */
+module.exports.dishSetState = function(orderId, dishId, stateId, callback) {
+    
+    // сначала найдем заказ
+    Order.findById(orderId, function(err, order) {
+        if (err) { 
+            callback(err, null);
+            return;
+        }
+
+        // в заказе найдём блюдо
+        if (order) {
+            order.dishes.forEach((v,i,a) => {
+                if (v.dish._id == dishId) {
+                    v.dish.stateId = stateId;
+                    order.save()
+                    .then(v => { return callback(null, order)},
+                    err => log(err)
+                    )
+                    
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Перевод всех блюд в одно состояние
+ * @param {Number} stateId - новое состояние
+ * @param {Fn} callback (err, doc) - результат (в doc - новый изменённый объект)
+ */
+module.exports.allDishesSetStateOn = function(stateId, callback) {
+    
+    let opts = { new: true, runValidators: true };
+
+    // все заказы
+    Order.find ({}, function(err, orders) {
+        if (err) { 
+            callback(err, null);
+            return;
+        }
+
+        // в заказе все блюда
+        if (orders) {
+            orders.forEach( o => {
+                o.dishes.forEach( d => {                
+                    d.dish.stateId = stateId;
+                    o.save();
+                });
+            });
+            callback(null, {message: `все блюда переведены в состояние: ${stateId}`, });
+        }
+    });
+}
+
+/**
  * Закрыть заказ
  * @param {ObjectId} orederId _id заказа
  * @param {Fn} callback (err, doc) - результат (в doc- новый изменённый объект)
@@ -366,5 +434,32 @@ module.exports.getOrderList = function(callback) {
         }
         //log('module.exports.getOrderList_docs:', docs);
         callback(err, docs);
+    });
+}
+
+/**
+ * Возвращает список заказов и список текущих заказчиков
+ * @param {Fn} callback (err, docs) - результат, docs:{orderList, userList}
+ */
+module.exports.getOrderListAndUsers = function(callback) {
+    let usersInOrders = [];
+    self = this;
+    Order.find({}, function(err, orders) {
+     
+        if (err) {
+            callback(err, null);
+            return;
+        }
+
+        if (orders) {
+            orders.forEach(v => usersInOrders.push(v.userId));
+            //log('module.exports.getOrderListAndUsers_users:', usersInOrders);
+            self.getUserList(usersInOrders, (err, users) => {
+                if (err) { return callback(err, null) }
+                if (users) {
+                    callback(null, {orderList:orders, userList:users});        
+                }
+            });
+        }
     });
 }
