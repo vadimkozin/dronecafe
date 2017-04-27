@@ -63,6 +63,8 @@ angular
       ioSocket: myIoSocket
     });
 
+    mySocket.forward('changeStateDish');
+
     return mySocket;
 });
 

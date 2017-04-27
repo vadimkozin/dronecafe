@@ -19,7 +19,7 @@
       <h5>Состояние заказа</h5>
       <span ng-if="vm.currentOrder">блюд: {{ vm.currentOrder.dishes.length }}  стоимость: {{ vm.summaOrder | currency:'full' }}</span>
       <span ng-if="!vm.currentOrder">Вы еще ничего не заказали.</span> <br />
-      <button class="btn waves-effect waves-light light-green" ng-click="vm.addToOrder()" >Добавить</button>
+      <button class="btn waves-effect waves-light light-green" ng-click="vm.showMenu()" >Добавить</button>
   </div>
   <div ng-if="vm.currentOrder">
     <ul class="collection with-header">

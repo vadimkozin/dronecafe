@@ -115,7 +115,8 @@
                     callback(data.err, null);
                 }
                 if (data._id) {
-                    mySocket.removeListener('dishSetState'); 
+                    mySocket.removeListener('dishSetState');
+                    mySocket.emit('changeStateDish', data);
                     callback(null, data);
                 }
 
@@ -123,14 +124,18 @@
 
             mySocket.emit('dishSetState', obj); 
 
-        }
+        } // end dishSetState
+
+ 
+       
 
         return {
             addDishToOrder : addDishToOrder,
             getOrderByUserId : getOrderByUserId,
             getOrderList: getOrderList,
             getOrderListAndUsers: getOrderListAndUsers,
-            dishSetState: dishSetState
+            dishSetState: dishSetState,
+
         };
 
     }

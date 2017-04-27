@@ -4,8 +4,8 @@
     .module('cafeApp')
     .controller('kitchenCtrl', kitchenCtrl);
 
-  kitchenCtrl.$inject = ['$scope', '$location','authentication','mySocket', 'order', 'loggingService'];
-  function kitchenCtrl($scope, $location, authentication, mySocket, order, loggingService ) {
+  kitchenCtrl.$inject = ['$scope', '$location', 'order', 'loggingService'];
+  function kitchenCtrl($scope, $location, order, loggingService ) {
     
     let vm = this;
     
@@ -53,8 +53,6 @@
     // текущее состояние по готовности блюд
     vm.start = function() {     
       order.getOrderListAndUsers((err, data) => {
-        //log('order_list:', data.orderList);
-        //log('user_list:', data.userList);
         vm.orderList = data.orderList;
         vm.userList = data.userList;
         vm.users.usersListToObject(vm.userList);
@@ -62,8 +60,9 @@
         log('dishes:', vm.dishes);
         log(vm.users.outUsers());
       });
-  }
-  vm.start();
+    }
+    vm.start();
+    
     
     // из списка заказов (3D) получаем список блюд(2D) с дополнительными полями для view
     // в интерфейсе повара отображение будет таким:
@@ -98,7 +97,12 @@
       getEmail(key) { return this._obj[key].email },
       outUsers() { return this._obj }
     }      
- 
+     
+    // отслеживание изменений состояний блюда на страничке повара
+    $scope.$on('socket:changeStateDish', function () {
+      vm.start();
+    });    
+      
     
     // это на потом
     vm.returnPage = $location.search().page || '/';

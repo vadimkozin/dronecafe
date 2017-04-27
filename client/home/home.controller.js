@@ -112,7 +112,7 @@
 
     
     // показать меню для добавления блюд к заказу 
-    vm.addToOrder = function() {
+    vm.showMenu = function() {
       vm.isShowListDish = true;
 
       mySocket.on('getmenu', function(data) {
@@ -134,23 +134,27 @@
 
     // добавить одно блюдо к заказу
     vm.addDishToOrder = function(dishId) {
-      log(dishId);
       let orderId = vm.currentOrder ? vm.currentOrder._id : null;
       let obj = {dishId:dishId, userId:vm.currentUser._id, orderId:orderId};
-      log('obj:', obj);
       order.addDishToOrder(obj, (err, data) => {
-        log('home.controller.add_dish_to_order::::', data);
         if (err) {
           log('home.controller.add_dish_to_order:', err);
           return;
         }
         if (data) {
-          log('DATA:::', data);
           vm.updateOrder();
         }
       });
       
     } // end addDishToOrder
+
+
+    // отслеживание изменений состояний блюда на страничке повара
+    $scope.$on('socket:changeStateDish', function () {
+      vm.updateOrder();
+    });
+
+
 
   } // end homeCtrl
 

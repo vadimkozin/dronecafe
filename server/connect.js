@@ -159,7 +159,8 @@ function go(server) {
                 }
                 if (data) {
                     socket.emit('dishSetState', data);
-                    log('DISH_SET_SATE :', data);
+                    socket.broadcast.emit('changeStateDish', data);
+                    log('DISH_SET_STATE :', data);
                 }
 
             });
