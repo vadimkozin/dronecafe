@@ -3,6 +3,9 @@
 const socketIO = require('socket.io');
 const q = require ('../app_api/query');
 const log = require('./lib/logging').logging().log;
+const deliver = require('netology-fake-drone-api').deliver;
+//const deliver = require('./deliver/deliver').deliver;
+
 
 function go(server) {
     const io = socketIO(server);
@@ -34,7 +37,7 @@ function go(server) {
             q.userRechargeAccount(msg.userId, msg.summa, (err, data) => {
                 if (err) {
                     log('ERROR_:(%d) %s', err.code, err.message);
-                    let message = {err: err, message: 'Ошибка пополнения баланса.'};
+                    let message = {err: err, message: 'Ошибка изменения баланса.'};
                     socket.emit('refill', message);
                     return;
                 }
@@ -148,7 +151,8 @@ function go(server) {
             });
         });  
 
-        // перевод блюда в заказе в другое состояние (1-5)   
+        // перевод блюда в заказе в другое состояние (1-5)
+        // obj = {orderId, dishId, stateId, userId, summa}   
         socket.on('dishSetState', function(obj) {
             q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
                 if (err) {
@@ -161,11 +165,46 @@ function go(server) {
                     socket.emit('dishSetState', data);
                     socket.broadcast.emit('changeStateDish', data);
                     log('DISH_SET_STATE :', data);
-                }
+                    
+                    // организация доставки блюда
+                    if (obj.stateId == 3) {
+                        let d = deliver(obj.dishId);
+                        d.then(
+                            result => {     // всё хорошо, служба доставки справилась     
+                                obj.stateId = 5;
+                                q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
+                                    if (data) {
+                                        socket.broadcast.emit('changeStateDish', data);
+                                    }
+                                });
+
+                        }, 
+                            error => {      // всё плохо, дрон разбился!
+                                obj.stateId = 4;                               
+                                q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
+                                    if (data) {
+                                        // надо увеличить счет клиента на сумму недоставленного блюда
+                                        q.userRechargeAccount(obj.userId, obj.summa, (err, user) => {
+                                            if (err) {
+                                                log('ERROR_:(%d) %s', err.code, err.message);
+                                                return;
+                                            }
+                                            if (user) {
+                                                // и сообщить клиенту, что сумма вернулась на баланс
+                                                socket.broadcast.emit('changeStateDish', user);
+                                            }
+                                        });
+                                    }
+                                });
+
+                            }
+                        )
+                    } // end (obj.stateId == 3)
+                } // end if (data)
 
             });
         
-        });
+        }); // end socket.on('dishSetState')
 
 
 

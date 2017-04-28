@@ -40,7 +40,9 @@
       vm.summaOrder = 0;
       if (vm.currentOrder) {
           vm.currentOrder.dishes.forEach((v) => {
-            vm.summaOrder += v.dish.price * v.count;
+            if (v.dish.stateId != 4) {
+              vm.summaOrder += v.dish.price * v.count;
+            }
         }); 
       }
     }
@@ -136,9 +138,19 @@
 
 
     // отслеживание изменений состояний блюда на страничке повара
-    $scope.$on('socket:changeStateDish', function () {
+    $scope.$on('socket:changeStateDish', ((sock, user) => {
+      
       vm.updateOrder();
-    });
+      
+      // если возникли сложности, то и деньги надо вернуть
+      if (user.account) {
+        
+        vm.updateSummaOrder();
+        authentication.saveToken(user.jwt); // обновляем JWT, так как сумма на счете изменилась
+        vm.updateCurrentUser();             // чтобы представление обновило данные
+      }
+
+    }));
 
 
 

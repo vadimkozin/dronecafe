@@ -123,7 +123,7 @@
 
         /**
          * Перевод блюда в другое состояние (1-5)
-         * @param {*} obj {orderId, dishId, stateId} код заказа, код блюда, новое состояние
+         * @param {*} obj {orderId, dishId, stateId, userId, summa} код заказа, код блюда, новое состояние, код заказчика, сумма за блюдо
          * @param {*} callback (err, data) - результат, где data-изменённый заказ
          */
         let dishSetState  = function(obj, callback) {

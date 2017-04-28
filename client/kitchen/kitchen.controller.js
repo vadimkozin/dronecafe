@@ -35,8 +35,10 @@
 
     // переход блюда в другое состояние
     vm.nextState = function (dish, nextState) {
+
+      log('nextState_dish:', dish);
       
-      let obj = {orderId:dish.orderId, dishId:dish._id, stateId:nextState};
+      let obj = {userId:dish.userId, summa:dish.count*dish.price, orderId:dish.orderId, dishId:dish._id, stateId:nextState};
       
       // переход 
       order.dishSetState(obj, (err, data) => {
@@ -63,7 +65,7 @@
     }
     vm.start();
     
-    
+
     // из списка заказов (3D) получаем список блюд(2D) с дополнительными полями для view
     // в интерфейсе повара отображение будет таким:
     // название1 (7шт) (alex)
