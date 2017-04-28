@@ -31,7 +31,7 @@ function go(server) {
 
         // пополнение счета
         socket.on('refill', function(msg) {
-            q.userRechargeAccount(msg.id, msg.summa, (err, data) => {
+            q.userRechargeAccount(msg.userId, msg.summa, (err, data) => {
                 if (err) {
                     log('ERROR_:(%d) %s', err.code, err.message);
                     let message = {err: err, message: 'Ошибка пополнения баланса.'};

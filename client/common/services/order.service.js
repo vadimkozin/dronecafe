@@ -79,6 +79,26 @@
 
         };
 
+        /**
+         * Возвращает меню (список блюд)
+         * @param {Fn} callback (err, data) - результат 
+         */
+        let getMenu = function(callback) {
+            mySocket.on('getmenu', function(data) {
+                if (data.err) {
+                    mySocket.removeListener('getmenu');
+                    callback(data.err, null);
+                }
+                if (data.menuList) {
+                    mySocket.removeListener('getmenu'); 
+                    callback(null, data.menuList);
+                }
+
+            });
+
+            mySocket.emit('getmenu'); 
+
+        };
 
         /**
          * Возвращает все заказы и заказчиков
@@ -126,8 +146,32 @@
 
         } // end dishSetState
 
- 
+
+        /**
+         * Пополнение счета
+         * @param {*} obj {userId, summa} код клиента, сумма пополнения
+         * @param {*} callback (err, data) - результат, где data-
+         */
+        let refill = function(obj, callback) {
+            mySocket.on('refill', function(data) {
+                if (data.err) {
+                    mySocket.removeListener('refill');
+                    callback(data.err, null);
+                }
+                if (data._id) {
+                    mySocket.removeListener('refill');
+                    callback(null, data); 
+                }
+
+            });
+            mySocket.emit('refill', {
+                userId: obj.userId,
+                summa: obj.summa,   
+            });
+        }
        
+
+
 
         return {
             addDishToOrder : addDishToOrder,
@@ -135,6 +179,8 @@
             getOrderList: getOrderList,
             getOrderListAndUsers: getOrderListAndUsers,
             dishSetState: dishSetState,
+            refill: refill,
+            getMenu: getMenu
 
         };
 

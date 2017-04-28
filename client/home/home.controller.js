@@ -4,8 +4,8 @@
     .module('cafeApp')
     .controller('homeCtrl', homeCtrl);
 
- homeCtrl.$inject = ['$scope', '$location', 'authentication', 'mySocket', 'order', 'loggingService', 'stateService'];
-  function homeCtrl($scope, $location, authentication, mySocket, order, loggingService, stateService) {
+ homeCtrl.$inject = ['$scope', '$location', 'authentication', 'order', 'loggingService', 'stateService'];
+  function homeCtrl($scope, $location, authentication, order, loggingService, stateService) {
     
     let vm = this;
     const log = loggingService.log;
@@ -45,9 +45,8 @@
       }
     }
   
-
     // когда асинхронно пополним счёт, вот оно и пригодиться
-    $scope._updateCurrentUser = function() {
+    vm.updateCurrentUser = function() {
       $scope.$apply(function() {
         vm.isLoggedIn = authentication.isLoggedIn();
         vm.currentUser = authentication.currentUser();
@@ -60,7 +59,6 @@
         vm.message = error.message;
       });
     };
-
 
     // что-то пишем в шапке
     vm.pageHeader = {
@@ -86,56 +84,44 @@
 
       vm.formError = "";
       
-      mySocket.on('refill', function(data) {
-        if (data.err) {
-          vm.formError = data.message;
-          mySocket.removeListener('refill');
+      order.refill({userId:vm.currentUser._id, summa}, (err, user) => {
+        if (err) {
+          vm.formError = err.message;
+          return;
         }
-        if (data._id) {
-          authentication.saveToken(data.jwt); // обновляем JWT, так как сумма на счете изменилась
-          mySocket.removeListener('refill'); 
-          $scope._updateCurrentUser();        // чтобы представление обновило данные
+        if (user) {
+          authentication.saveToken(user.jwt); // обновляем JWT, так как сумма на счете изменилась
+          vm.updateCurrentUser();             // чтобы представление обновило данные          
         }
-
-      });
-      mySocket.emit('refill', {
-        id: vm.currentUser._id,
-        summa: summa,   
       });
     }
-
-
 
 
     // ДОБАВЛЕНИЕ БЛЮД к ЗАКАЗУ
     vm.isShowListDish =  false;
 
-    
     // показать меню для добавления блюд к заказу 
     vm.showMenu = function() {
-      vm.isShowListDish = true;
 
-      mySocket.on('getmenu', function(data) {
+      order.getMenu((err, data) => {
         if (data.err) {
           vm.formError = data.message;
-          mySocket.removeListener('getmenu');
+          return;
         }
-        if (data.menuList) {          
-          mySocket.removeListener('getmenu');
-          vm.menuList = data.menuList;
-          log(data.menuList); 
-        }
-
+      
+        vm.menuList = data;
+        vm.isShowListDish = true; 
+        log('menuList:', vm.menuList);
+        
       });
-      mySocket.emit('getmenu');
-
-    } // end addToOrder
-
+    }
 
     // добавить одно блюдо к заказу
     vm.addDishToOrder = function(dishId) {
+
       let orderId = vm.currentOrder ? vm.currentOrder._id : null;
       let obj = {dishId:dishId, userId:vm.currentUser._id, orderId:orderId};
+
       order.addDishToOrder(obj, (err, data) => {
         if (err) {
           log('home.controller.add_dish_to_order:', err);

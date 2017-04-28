@@ -85,13 +85,13 @@ module.exports.stateList = function(callback) {
 
 /**
  * Пополнение счета
- * @param {ObjectId} id -  код пользователя (_id) 
+ * @param {ObjectId} userId -  код пользователя (_id) 
  * @param {Number} summa - столько добавить к счёту (или вычесть для -summa) 
  * @param {Fn} callback (err, doc) - результат
  */
-module.exports.userRechargeAccount = function(id, summa, callback) {
+module.exports.userRechargeAccount = function(userId, summa, callback) {
 
-    User.findByIdAndUpdate(id, {$inc:{account:summa}}, {new: true}, function(err, user) {
+    User.findByIdAndUpdate(userId, {$inc:{account:summa}}, {new: true}, function(err, user) {
         
         if (err) { 
             return callback(err, null);
