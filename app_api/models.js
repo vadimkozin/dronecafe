@@ -7,7 +7,7 @@ class State {
     static get stateNames() { return ['-','Заказано', 'Готовится', 'Доставляется', 'Возникли сложности', 'Подано'];}
     static  getName(state) {return State.stateNames[state];} // имя состояния
     static get ordered() {return 1;}    // заказано
-    static get cook() {return 2;}       // готовиться
+    static get cook() {return 2;}       // готовится
     static get delivered() {return 3;}  // доставляется
     static get problems() {return 4;}   // возникли сложности
     static get served() {return 5;}     // подано
@@ -21,7 +21,14 @@ let dishShema = new mongoose.Schema({
     rating: {type:Number, required:true},
     ingredients: [String],
     price: {type:Number, required:true},
-    stateId: {type: Number, min:1, max:5, required:true, "default":1}
+    stateId: {type: Number, min:1, max:5, required:true, "default":1},  // текущее состояние
+    ts:{                                                // time stamp:
+        state1: {type: Date, "default": Date.now},      //  сделали заказ
+        state2: {type: Date},                           //  начали готовить
+        state3: {type: Date},                           //  начали доставлять
+        state4: {type: Date},                           //  возникли сложности с доставкой
+        state5: {type: Date},                           //  подано
+    }
 }, {versionKey: false}
 );
 

@@ -362,9 +362,10 @@ module.exports.dishSetState = function(orderId, dishId, stateId, callback) {
             order.dishes.forEach((v,i,a) => {
                 if (v.dish._id == dishId) {
                     v.dish.stateId = stateId;
+                    v.dish.ts['state' + stateId] = Date.now();    // фиксируем время перевода блюда в другое состояние
                     order.save()
                     .then(v => { return callback(null, order)},
-                    err => log(err)
+                        err => log(err)
                     )
                     
                 }
