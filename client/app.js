@@ -1,6 +1,6 @@
 (function () {
 //let cafeApp =
-angular.module('cafeApp', ['ngRoute', 'btford.socket-io']);
+angular.module('cafeApp', ['ngRoute', 'btford.socket-io', 'ui.materialize']);
 
 angular
     .module('cafeApp')

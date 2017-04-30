@@ -46,7 +46,8 @@
           vm.user.name = "";
           vm.user.email = "";
           $location.search('page', null);
-          $location.path(vm.returnPage);
+          //$location.path(vm.returnPage);
+          $location.path('/home');
           mySocket.removeListener('login'); 
         }
 
@@ -59,18 +60,7 @@
 
     };
 
-    vm.doLogin_ = function() {
-      vm.formError = "";
-      authentication
-        .login(vm.user)
-        .error(function(err){
-          vm.formError = err;
-        })
-        .then(function(){
-          $location.search('page', null); 
-          $location.path(vm.returnPage);
-        });
-    };
+
 
 
   }
