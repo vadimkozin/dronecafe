@@ -11,25 +11,27 @@
     
     const log = loggingService.log;
     
-    // что-то пишем в шапке страницы
+    // что-то пишем в шапке страницы (для директивы page-header)
     vm.pageHeader = {
       title: 'Кухня',
       subtitle: 'Всё будет вовремя!'
     };
-
+    
     // список Заказано / список Готовятся (для директивы cook-list)
     vm.state = {
       s1: {
         header: 'Заказано',
         bottomTitle: 'Начать готовить',
         stateDish: 1,
-        nextState: 2
+        nextState: 2,
+        showCookTimer: false
       },
       s2: {
         header: 'Готовятся',
         bottomTitle: 'Готово',
         stateDish: 2,
-        nextState: 3        
+        nextState: 3,
+        showCookTimer: true 
       }
     }
 

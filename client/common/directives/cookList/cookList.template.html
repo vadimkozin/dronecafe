@@ -18,14 +18,16 @@ pvm.dish: {
 -->
 
 <ul class="collection with-header">
-<li class="collection-header"><h4>{{ content.header }}</h4></li>
-<li ng-repeat="oneDish in pvm.dishes | dishStateOn:content.stateDish | orderBy:'title' "  class="collection-item" >
-    <div>
-        <span>{{ oneDish.title }} <br /> ({{ oneDish.count | unit }}) ({{ oneDish.userEmail }}) ({{content.stateDish}})</span>
+    <li class="collection-header"><h4>{{ content.header }}</h4></li>
+    <li ng-repeat="oneDish in pvm.dishes | dishStateOn:content.stateDish | orderBy:'title' "  class="collection-item" >
+        <div>
+            <span>{{ oneDish.title }} <br /> ({{ oneDish.count | unit }}) ({{ oneDish.userEmail }})</span>
             
-        <a class="waves-effect waves-teal" ng-click="pvm.nextState(oneDish,content.nextState)">{{ content.bottomTitle }}</a>
-    </div> 
-</li>           
+            <span ng-if="content.showCookTimer" cook-timer="oneDish.ts" stateId="oneDish.stateId" page="pvm.pageName" stateStart="2" ></span>
+        
+            <a class="waves-effect waves-teal" ng-click="pvm.nextState(oneDish,content.nextState)">{{ content.bottomTitle }}</a>
+        </div> 
+    </li>           
 </ul>
 
 

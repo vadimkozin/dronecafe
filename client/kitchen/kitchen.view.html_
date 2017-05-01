@@ -1,33 +1,29 @@
-<style>
-[cook-timer] {
-  font-size: 110%;
-  color:darkgoldenrod;
-}
-</style>
-
 <navigation></navigation>
 
 <div class="container">
-
     <page-header content="vm.pageHeader"></page-header>
 
     <div class="row">
-
+        <!--
+         <div class="col s12">
+            <h5 class="center-align">This should be center aligned</h5>
+         </div>
+         -->
         <!-- Заказано     -->
         <div class="col s6">
-
+            <!--  <h6 class="center-align">Заказано</h6> -->
             <cook-list content="vm.state.s1"  pvm="vm" ></cook-list>
-
         </div>
 
         <!-- Готовятся -->
         <div class="col s6">
-
+            <!-- <h6 class="center-align">Готовятся</h6> -->
             <cook-list content="vm.state.s2"  pvm="vm" ></cook-list>
 
         </div>
     </div>
 
-    <footer-page></footer-page>
 
+
+    <footer-page></footer-page>
 </div>
