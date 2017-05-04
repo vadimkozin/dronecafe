@@ -1,4 +1,4 @@
-// отображение кодов состояний на имена
+// коды состояний приготовления блюда - запрашиваем на сервере и кладём в локальное хранилище
 
 (function () {
 
@@ -12,45 +12,56 @@
         const log = loggingService.log;
 
         /**
-         * Запрос списка имён состояний заказа
+         * Запрос JSON объекта о состояниях заказа
          * @param {Fn} callback 
          */
-        let getListState = function(callback) {
-            mySocket.on('getListState', function(data) {
-                log('state.service.getListState_data:', data);
+        let getStateJsonFromServer = function(callback) {
+            mySocket.on('getStateJSON', function(data) {
+                log('state.service.getStateJSON_data:', data);
                 if (data.err) {
-                    mySocket.removeListener('getListState');
+                    mySocket.removeListener('getStateJSON');
                     callback(data.err, null);
                 }
-                if (data.stateNames) {
-                    mySocket.removeListener('getListState');
-                    saveStateNames(data.stateNames);
-                    callback(null, data.stateNames);
+                if (data.stateJSON) {
+                    mySocket.removeListener('getStateJSON');
+                    _saveStateJson(data.stateJSON);                  
+                    callback(null, JSON.parse(data.stateJSON));
                 }
 
             });
 
-            mySocket.emit('getListState');
+            mySocket.emit('getStateJSON');
             
         }
 
-        let saveStateNames = function (obj) {
-            $window.localStorage['cafe-state-names'] = obj;
-        };
-
-        let getStateNames = function () {
-            return ($window.localStorage['cafe-state-names']).split(',');
-        };
-
-        let getNameState = function (stateId) {
-            return getStateNames()[stateId];
+        // сохраняет имена в локальном хранилище
+        let _saveStateJson = function (obj) {
+            $window.localStorage['cafe-state'] = obj;
+            $window.localStorage['cafe-state-names'] = _mapStateCodeToName(JSON.parse(obj));        
         };
         
+        // возвращает объект всех состояний приготовления блюда (как на сервере)
+        let getState = function (obj) {
+            return (JSON.parse($window.localStorage['cafe-state']));
+        };
+
+        // возвращает имя состояния по коду (1-5)
+        let getNameState = function (stateId) {
+            return ($window.localStorage['cafe-state-names']).split(',')[stateId];
+        };
+
+        // возвращает массив имён состояний: ['-', 'заказано', 'готовится', ..]
+        let _mapStateCodeToName= function (state) {
+            let arr = ['-'];
+            for (let x in state) {
+                arr.push(state[x].name);
+            }
+            return arr;
+        }
 
         return {
-            getListState : getListState,
-            saveStateNames : saveStateNames,
-            getStateNames: getStateNames,
+            getStateJsonFromServer: getStateJsonFromServer,
+            getState: getState,
             getNameState : getNameState
         };
 

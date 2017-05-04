@@ -23,7 +23,7 @@ pvm.dish: {
         <div>
             <span>{{ oneDish.title }} <br /> ({{ oneDish.count | unit }}) ({{ oneDish.userEmail }})</span>
             
-            <span ng-if="content.showCookTimer" cook-timer="oneDish.ts" stateId="oneDish.stateId" page="pvm.pageName" stateStart="2" ></span>
+            <span ng-if="content.showCookTimer" cook-timer="oneDish.ts" stateId="oneDish.stateId" page="pvm.pageName" stateStart="pvm.states.cooking.code" ></span>
         
             <a class="waves-effect waves-teal" ng-click="pvm.nextState(oneDish,content.nextState)">{{ content.bottomTitle }}</a>
         </div> 

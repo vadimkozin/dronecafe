@@ -120,6 +120,24 @@ function go(server) {
             });
         });
 
+        // возвращает объект JSON о состояниях заказа 
+        socket.on('getStateJSON', function(obj) {
+            log('get_state_json:', obj);
+            q.getStateJSON((err, data) => {
+                if (err) {
+                    log('ERROR_:(%d) %s', err.code, err.message);
+                    let message = {err: err, message: 'Ошибка запроса JSON состояний заказа.'};
+                    socket.emit('getStateJSON', message);
+                    return;
+                }
+                if (data) {
+                    socket.emit('getStateJSON', {stateJSON: data});
+                    log('get_state_json_DATA:', data);
+                }
+
+            });
+        });
+
         // возвращает все заказы
         socket.on('getOrderList', function(msg) {
             q.getOrderList((err, data) => {

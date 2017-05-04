@@ -19,10 +19,9 @@
       $location.path('/login');
     }
 
-    // список названий состояний заказа
-    stateService.getListState((err, data) => {
-      vm.stateNames = data;
-      log('vm.stateNames:', vm.stateNames);
+    // все состояния приготовления блюда
+    stateService.getStateJsonFromServer((err, data) => {
+      vm.states = data;  // vm.states.problems.code, vm.states.problems.name, .. 
     });
     
     // текущий заказ
@@ -40,7 +39,7 @@
       vm.summaOrder = 0;
       if (vm.currentOrder) {
           vm.currentOrder.dishes.forEach((v) => {
-            if (v.dish.stateId != 4) {
+            if (v.dish.stateId != vm.states.problems.code) { // 4
               vm.summaOrder += v.dish.price * v.dish.discount * v.count;
             }
         }); 

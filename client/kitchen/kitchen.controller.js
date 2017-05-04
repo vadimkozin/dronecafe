@@ -4,8 +4,8 @@
     .module('cafeApp')
     .controller('kitchenCtrl', kitchenCtrl);
 
-  kitchenCtrl.$inject = ['$scope', '$location', 'order', 'loggingService'];
-  function kitchenCtrl($scope, $location, order, loggingService ) {
+  kitchenCtrl.$inject = ['$scope', '$location', 'order', 'loggingService','stateService'];
+  function kitchenCtrl($scope, $location, order, loggingService, stateService ) {
     
     let vm = this;
     
@@ -17,24 +17,28 @@
       subtitle: 'Всё будет вовремя!'
     };
     
-    // список Заказано / список Готовятся (для директивы cook-list)
-    vm.state = {
-      s1: {
-        header: 'Заказано',
-        bottomTitle: 'Начать готовить',
-        stateDish: 1,
-        nextState: 2,
-        showCookTimer: false
-      },
-      s2: {
-        header: 'Готовятся',
-        bottomTitle: 'Готово',
-        stateDish: 2,
-        nextState: 3,
-        showCookTimer: true 
-      }
-    }
+    // запросим все состояния приготовления блюда
+    stateService.getStateJsonFromServer((err, data) => {
+      vm.states = data;  // vm.states.problems.code, vm.states.problems.name, .. 
 
+      // список Заказано / список Готовятся (для директивы cook-list)
+      vm.state = {
+        s1: {
+          header: 'Заказано',
+          bottomTitle: 'Начать готовить',
+          stateDish: vm.states.ordered.code, // 1
+          nextState: vm.states.cooking.code, // 2
+          showCookTimer: false
+        },
+        s2: {
+          header: 'Готовятся',
+          bottomTitle: 'Готово',
+          stateDish: vm.states.cooking.code,   // 2 
+          nextState: vm.states.delivered.code, // 3
+          showCookTimer: true 
+        }
+      }
+  });
     // переход блюда в другое состояние
     vm.nextState = function (dish, nextState) {
 

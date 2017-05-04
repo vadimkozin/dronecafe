@@ -1,3 +1,5 @@
+// сервис аутентификации
+
 (function () {
 
   angular
@@ -59,6 +61,8 @@
     
     logout = function() {
       $window.localStorage.removeItem('cafe-token');
+      $window.localStorage.clear();
+
     };
 
     return {

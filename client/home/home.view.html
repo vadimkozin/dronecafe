@@ -33,10 +33,10 @@
         <li ng-repeat="dishOne in vm.currentOrder.dishes" class="collection-item">
           <div>{{dishOne.dish.title}} ({{ dishOne.dish.price | currency }} x {{ dishOne.count | unit }} = {{ dishOne.dish.price * dishOne.dish.discount * dishOne.count | currency }})
             
-            <span cook-timer="dishOne.dish.ts" stateId="dishOne.dish.stateId" page="vm.pageName" stateStart="1"></span>
+            <span cook-timer="dishOne.dish.ts" stateId="dishOne.dish.stateId" page="vm.pageName" stateStart="vm.states.ordered.code"></span>
 
-            <a ng-if="dishOne.dish.stateId==4"  href="" ng-click="vm.reOrder(dishOne.dish, dishOne.count, vm.currentOrder._id)"  class="secondary-content" tooltipped data-position="bottom" data-delay="50" data-tooltip="Повторить со скидкой 5%"><i class="material-icons">replay_5</i></a>
-            <a ng-if="dishOne.dish.stateId==4"  href="" ng-click="vm.deleteDishFromOrder(dishOne.dish._id, vm.currentOrder._id)" class="secondary-content" tooltipped data-position="bottom" data-delay="50" data-tooltip="Отменить заказ"><i class="material-icons">clear</i></a>
+            <a ng-if="dishOne.dish.stateId==vm.states.problems.code"  href="" ng-click="vm.reOrder(dishOne.dish, dishOne.count, vm.currentOrder._id)"  class="secondary-content" tooltipped data-position="bottom" data-delay="50" data-tooltip="Повторить со скидкой 5%"><i class="material-icons">replay_5</i></a>
+            <a ng-if="dishOne.dish.stateId==vm.states.problems.code"  href="" ng-click="vm.deleteDishFromOrder(dishOne.dish._id, vm.currentOrder._id)" class="secondary-content" tooltipped data-position="bottom" data-delay="50" data-tooltip="Отменить заказ"><i class="material-icons">clear</i></a>
   
             <span class="secondary-content">{{ dishOne.dish.stateId | state }}</span>
 

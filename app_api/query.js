@@ -6,9 +6,9 @@ require ('./db');   //пока
 const Dish = require ('./models').Dish;
 const User = require ('./models').User;
 const Order = require ('./models').Order;
-const State = require ('./models').State;
-const log = require('../server/lib/logging').logging().log;
+const STATE = require ('./models').STATE;
 
+const log = require('../server/lib/logging').logging().log;
 
 // собирает вместе JWT + данные о пользователе
 function _collectUserData(user) {
@@ -76,11 +76,11 @@ module.exports.getUserList = function(userList, callback) {
 }
 
 /**
- * Возвращает список названий состояний заказа
+ * Возвращает объект JSON о состояниях заказа
  * @param {Fn} callback (err, docs) - результат
  */
-module.exports.stateList = function(callback) {
-    callback(null, State.stateNames);
+module.exports.getStateJSON = function(callback) {
+    callback(null, JSON.stringify(STATE));
 }
 
 /**
@@ -369,12 +369,20 @@ module.exports.dishSetState = function(obj, callback) {
                     if (obj.discount) { 
                         v.dish.discount = obj.discount;
                         v.dish.ts.state1 = new Date();
+                        /*
                         [ 2, 3, 4, 5 ].forEach(x => {
                             if (v.dish.ts['state' + x]) {
                                 v.dish.ts['state' + x] = v.dish.ts.state1;
                             }
                         });
-                                           
+                        */
+                        for (let x in STATE) {
+                            code = STATE[x].code;
+                            if (v.dish.ts['state' + code]) {
+                                v.dish.ts['state' + code] = v.dish.ts.state1;
+                            }
+                        }
+
                     }
 
                     order.save()

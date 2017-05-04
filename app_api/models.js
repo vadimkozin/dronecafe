@@ -2,17 +2,7 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
-// состояние блюда
-class State {
-    static get stateNames() { return ['-','Заказано', 'Готовится', 'Доставляется', 'Возникли сложности', 'Подано'];}
-    static  getName(state) {return State.stateNames[state];} // имя состояния
-    static get ordered() {return 1;}    // заказано
-    static get cook() {return 2;}       // готовится
-    static get delivered() {return 3;}  // доставляется
-    static get problems() {return 4;}   // возникли сложности
-    static get served() {return 5;}     // подано
-};
-
+// состояние блюдаs
 const STATE = {   
     ordered:    {code:1, name:'Заказано'},
     cooking:    {code:2, name:'Готовится'},
@@ -77,7 +67,7 @@ userShema.methods.generateJwt = function() {
     }, process.env.JWT_SECRET);
 };
 
-// схема: количество блюд в заказе
+// схема: блюдо и его количество в заказе
 let dishItem = new mongoose.Schema({
     dish: dishShema,
     count: {type: Number,  "default":1}
@@ -86,13 +76,8 @@ let dishItem = new mongoose.Schema({
 
 // схема: Заказ
 let orderShema = new mongoose.Schema({
-    userId: {type: mongoose.SchemaTypes.ObjectId, required:true, index:true},       // кто заказал
-    dishes: [dishItem],                                                 // что заказал (список блюд)
-    //stateId: {type: Number, min:1, max:5, required:true, "default":1},  // состояние заказа
-    //startCook: {type: Date, "default": Date.now},                       // начали готовить
-    //endCook: {type: Date, "default": new Date("1111/11/11 00:00:00")},  // закончили готовить
-    //served: {type: Date, "default": new Date("1111/11/11 00:00:00")},   // подали к столу
-    //closed: {type: Boolean, required:true, "default":false}             // заказ закрыт?
+    userId: {type: mongoose.SchemaTypes.ObjectId, required:true, index:true},   // кто заказал
+    dishes: [dishItem],                                                         // что заказал (список блюд)
 }, {versionKey: false}
 );
 
@@ -102,7 +87,7 @@ const User = mongoose.model('User', userShema);
 const Order = mongoose.model('Order', orderShema);
 
 module.exports = {
-    State,
+    STATE,
     User,
     Dish,
     Order
