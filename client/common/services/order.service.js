@@ -170,8 +170,46 @@
             });
         }
        
+        /**
+        * Уменьшает заказ на обно блюдо
+        * @param {Object} obj объект {orderId, dishId}: код заказа и код блюда в нём
+        * @param {Fn} callback (err, data) - результат
+        */
+        let subtractDishFromOrder = function(obj, callback) {
+             mySocket.on('subtractDishFromOrder', function(data) {
+                if (data.err) {
+                    mySocket.removeListener('subtractDishFromOrder');
+                    callback(data.err, null);
+                }
+                if (data) {
+                    mySocket.removeListener('subtractDishFromOrder');
+                    callback(null, data); 
+                }
 
+            });
+            mySocket.emit('subtractDishFromOrder', obj);        
+        }
 
+        /**
+         * Устанавливает скидку на блюдо
+         * @param {Object} obj = {orderId, dishId, discount, stateId}: 
+         *                       код заказа и код блюда в нём, скидка (ex. 0.95 = 5%), новое состояние блюда
+         * @param {Fn} callback (err, data) - результат
+         */
+        let setDiscountOnDish = function(obj, callback) {
+             mySocket.on('setDiscountOnDish', function(data) {
+                if (data.err) {
+                    mySocket.removeListener('setDiscountOnDish');
+                    callback(data.err, null);
+                }
+                if (data) {
+                    mySocket.removeListener('setDiscountOnDish');
+                    callback(null, data); 
+                }
+
+            });
+            mySocket.emit('setDiscountOnDish', obj);  
+        }
 
         return {
             addDishToOrder : addDishToOrder,
@@ -180,7 +218,9 @@
             getOrderListAndUsers: getOrderListAndUsers,
             dishSetState: dishSetState,
             refill: refill,
-            getMenu: getMenu
+            getMenu: getMenu,
+            subtractDishFromOrder: subtractDishFromOrder,
+            setDiscountOnDish: setDiscountOnDish
 
         };
 

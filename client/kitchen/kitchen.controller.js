@@ -40,7 +40,7 @@
 
       log('nextState_dish:', dish);
       
-      let obj = {userId:dish.userId, summa:dish.count*dish.price, orderId:dish.orderId, dishId:dish._id, stateId:nextState};
+      let obj = {userId:dish.userId, summa:dish.count*dish.price*dish.discount, orderId:dish.orderId, dishId:dish._id, stateId:nextState};
       
       // переход 
       order.dishSetState(obj, (err, data) => {

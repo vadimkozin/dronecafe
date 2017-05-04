@@ -41,7 +41,7 @@
       if (vm.currentOrder) {
           vm.currentOrder.dishes.forEach((v) => {
             if (v.dish.stateId != 4) {
-              vm.summaOrder += v.dish.price * v.count;
+              vm.summaOrder += v.dish.price * v.dish.discount * v.count;
             }
         }); 
       }
@@ -83,7 +83,7 @@
     // пополнить баланс
     vm.doRefill = function(summa) {
 
-      summa = summa || 100;   // по заданию увеличиваем на 100уе
+      summa = summa || 100;   // по заданию увеличиваем на 100
 
       vm.formError = "";
       
@@ -137,10 +137,43 @@
       
     } // end addDishToOrder
 
+    // удалить блюдо из заказа
+    vm.deleteDishFromOrder = function(dishId, orderId) {
+      order.subtractDishFromOrder({dishId, orderId}, (err, data) => {
+        if (err) {
+          log('home.controller.deleteDishFromOrder:', err);
+          return;
+        }
+        if (data) {
+          vm.updateOrder();
+        }
+      });
+    }
+
+    // перезаказать блюдо со скидкой 5%
+    vm.reOrder = function(dish, dishCount, orderId) {
+      log('vm.reOrder :', dish);
+      let discount = dish.discount * (100-5)/100;   // делаем скидку в 5% от текущей скидки
+      order.setDiscountOnDish({dishId:dish._id, orderId, discount, stateId:1}, (err, data) => {
+        if (err) {
+          log('home.controller.reOrder_err:', err);
+          return;
+        }
+        if (data) {
+          log('home.controller.reOrder_data:', data);
+          let cost = dish.price * discount * dishCount; 
+          log('home.controller.reOrder_cost:', cost);
+          vm.doRefill(-cost);
+          vm.updateOrder();
+        }
+      }); 
+    }
 
     // отслеживание изменений состояний блюда на страничке повара
     $scope.$on('socket:changeStateDish', ((sock, user) => {
       
+      log('socket:changeStateDish');
+
       vm.updateOrder();
       
       // если возникли сложности, то и деньги надо вернуть

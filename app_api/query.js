@@ -343,15 +343,16 @@ module.exports.orderSetState = function(orderId, stateId, callback) {
 
 /**
  * Перевод блюда в заказе в другое состояние (1-5)
- * @param {OrderId} orderId - _id заказа
- * @param {dishId} dishId - _id блюда
- * @param {Number} stateId - новое состояние
+ * @param {Object} obj {orderId, dishId, stateId, discount?} 
+ *                      код заказа, код блюда, новое состояние блюда, скидка если есть
  * @param {Fn} callback (err, doc) - результат (в doc - новый изменённый объект)
  */
-module.exports.dishSetState = function(orderId, dishId, stateId, callback) {
+//module.exports.dishSetState = function(orderId, dishId, stateId, callback) {
+module.exports.dishSetState = function(obj, callback) {
+    
     
     // сначала найдем заказ
-    Order.findById(orderId, function(err, order) {
+    Order.findById(obj.orderId, function(err, order) {
         if (err) { 
             callback(err, null);
             return;
@@ -360,9 +361,22 @@ module.exports.dishSetState = function(orderId, dishId, stateId, callback) {
         // в заказе найдём блюдо
         if (order) {
             order.dishes.forEach((v,i,a) => {
-                if (v.dish._id == dishId) {
-                    v.dish.stateId = stateId;
-                    v.dish.ts['state' + stateId] = Date.now();    // фиксируем время перевода блюда в другое состояние
+                if (v.dish._id == obj.dishId) {
+                    v.dish.stateId = obj.stateId;
+                    v.dish.ts['state' + obj.stateId] = Date.now();    // фиксируем время перевода блюда в другое состояние
+                    
+                    // если есть скидка на блюдо
+                    if (obj.discount) { 
+                        v.dish.discount = obj.discount;
+                        v.dish.ts.state1 = new Date();
+                        [ 2, 3, 4, 5 ].forEach(x => {
+                            if (v.dish.ts['state' + x]) {
+                                v.dish.ts['state' + x] = v.dish.ts.state1;
+                            }
+                        });
+                                           
+                    }
+
                     order.save()
                     .then(v => { return callback(null, order)},
                         err => log(err)

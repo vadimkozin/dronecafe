@@ -1,6 +1,6 @@
 module.exports.logging = function () {
       return {
-          log: console.log,
-          log_: function(){} 
+          log: process.env.NODE_ENV === 'production' ? function(){} : console.log,
+          log_: console.log    
       }
 }

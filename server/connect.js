@@ -3,8 +3,8 @@
 const socketIO = require('socket.io');
 const q = require ('../app_api/query');
 const log = require('./lib/logging').logging().log;
-const deliver = require('netology-fake-drone-api').deliver;
-//const deliver = require('./deliver/deliver').deliver;
+//const deliver = require('netology-fake-drone-api').deliver;
+const deliver = require('./deliver/deliver').deliver;   // debug, reject=50%
 
 
 function go(server) {
@@ -78,6 +78,7 @@ function go(server) {
                 if (data) {
                     socket.emit('addDishToOrder', {data: data});
                     log('connect.add_dish_to_order_DATA:', data);
+                    socket.broadcast.emit('changeStateDish', data);
                 }
 
             });
@@ -154,7 +155,8 @@ function go(server) {
         // перевод блюда в заказе в другое состояние (1-5)
         // obj = {orderId, dishId, stateId, userId, summa}   
         socket.on('dishSetState', function(obj) {
-            q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
+            //q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
+            q.dishSetState(obj, (err, data) => {
                 if (err) {
                     log('ERROR_:(%d) %s', err.code, err.message);
                     let message = {err: err, message: 'Ошибка изменения состояния блюда.'};
@@ -172,7 +174,9 @@ function go(server) {
                         d.then(
                             result => {     // всё хорошо, служба доставки справилась     
                                 obj.stateId = 5;
-                                q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
+                                //q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
+                                q.dishSetState(obj, (err, data) => {
+                
                                     if (data) {
                                         socket.broadcast.emit('changeStateDish', data);
                                     }
@@ -181,7 +185,9 @@ function go(server) {
                         }, 
                             error => {      // всё плохо, дрон разбился!
                                 obj.stateId = 4;                               
-                                q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
+                                //q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
+                                q.dishSetState(obj, (err, data) => {
+
                                     if (data) {
                                         // надо увеличить счет клиента на сумму недоставленного блюда
                                         q.userRechargeAccount(obj.userId, obj.summa, (err, user) => {
@@ -207,10 +213,50 @@ function go(server) {
         }); // end socket.on('dishSetState')
 
 
+        // Уменьшает заказ на обно блюдо
+        // obj = {orderId, dishId}: код заказа и код блюда в нём
+        socket.on('subtractDishFromOrder', function(obj) {
+            q.subtractDishFromOrder(obj, (err, data) => {
+                if (err) {
+                    log('ERROR_:(%d) %s', err.code, err.message);
+                    let message = {err: err, message: 'Ошибка уменьшения заказа на одно блюдо.'};
+                    socket.emit('subtractDishFromOrder', message);
+                    return;
+                }
+                if (data) {
+                    socket.emit('subtractDishFromOrder', data);
+                    log('SUBSTRACT_DISH_FROM_ORDER:', data);
+                }
+            });
+        }); 
+
+        // Устанавливает скидку на блюдо
+        // obj = {orderId, dishId, discount, stateId}: 
+        //       код заказа и код блюда в нём, скидка (0.95=5%), новое состояние блюда
+        socket.on('setDiscountOnDish', function(obj) {
+            //
+            q.dishSetState(obj, (err, data) => {
+                if (err) {
+                    log('ERROR_:(%d) %s', err.code, err.message);
+                    let message = {err: err, message: 'Ошибка установки скидки и нового состояния блюда.'};
+                    socket.emit('dishSetState', message);
+                    return;
+                }
+                if (data) {
+                    // сообщим клиенту что скидку сделали
+                    socket.emit('setDiscountOnDish', data);
+                    // сообщим клиенту что изменилось состояние
+                    socket.broadcast.emit('changeStateDish', data);
+                    log('DISH_SET_STATE_ :', data);
+                } 
+            });
+        });
 
 
 
-                 
-    });
-}
+
+    }) // io.on('connection'..
+} // function go(server) ..
+
+
 module.exports.go = go;

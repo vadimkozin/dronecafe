@@ -57,13 +57,15 @@ angular
                 
                 let ts = value;
         
-                // начало отсчёта: ts.state1 - ts.state2
+                // начало отсчёта: ts.state1 для клиента и ts.state2 для повара
                 startDate = new Date(ts['state' + stateStart]);
    
-                if (ts.state4) {
+                // ts.state4 = ts.state5 = ts.state1 - когда клиент повторяет заказ со скидкой
+                // сделано специально, чтобы отловить в этом месте
+                if (ts.state4 && ts.state4 != ts.state1) {
                     endDate = new Date(ts.state4);
                 }
-                if (ts.state5) {
+                if (ts.state5 && ts.state5 != ts.state1) {
                     endDate = new Date(ts.state5);
                 }
 

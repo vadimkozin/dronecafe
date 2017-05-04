@@ -13,6 +13,15 @@ class State {
     static get served() {return 5;}     // подано
 };
 
+const STATE = {   
+    ordered:    {code:1, name:'Заказано'},
+    cooking:    {code:2, name:'Готовится'},
+    delivered:  {code:3, name:'Доставляется'},
+    problems:   {code:4, name:'Возникли сложности'},
+    served:     {code:5, name:'Подано'}, // (served to the table)
+};
+
+
 // схема: Блюдо
 let dishShema = new mongoose.Schema({
     title: {type:String, required:true},
@@ -21,6 +30,7 @@ let dishShema = new mongoose.Schema({
     rating: {type:Number, required:true},
     ingredients: [String],
     price: {type:Number, required:true},
+    discount: {type:Number, required:true, "default":1},    // скидка, sum=price*discount
     stateId: {type: Number, min:1, max:5, required:true, "default":1},  // текущее состояние
     ts:{                                                // time stamp:
         state1: {type: Date, "default": Date.now},      //  сделали заказ
@@ -78,11 +88,11 @@ let dishItem = new mongoose.Schema({
 let orderShema = new mongoose.Schema({
     userId: {type: mongoose.SchemaTypes.ObjectId, required:true, index:true},       // кто заказал
     dishes: [dishItem],                                                 // что заказал (список блюд)
-    stateId: {type: Number, min:1, max:5, required:true, "default":1},  // состояние заказа
-    startCook: {type: Date, "default": Date.now},                       // начали готовить
-    endCook: {type: Date, "default": new Date("1111/11/11 00:00:00")},  // закончили готовить
-    served: {type: Date, "default": new Date("1111/11/11 00:00:00")},   // подали к столу
-    closed: {type: Boolean, required:true, "default":false}             // заказ закрыт?
+    //stateId: {type: Number, min:1, max:5, required:true, "default":1},  // состояние заказа
+    //startCook: {type: Date, "default": Date.now},                       // начали готовить
+    //endCook: {type: Date, "default": new Date("1111/11/11 00:00:00")},  // закончили готовить
+    //served: {type: Date, "default": new Date("1111/11/11 00:00:00")},   // подали к столу
+    //closed: {type: Boolean, required:true, "default":false}             // заказ закрыт?
 }, {versionKey: false}
 );
 
