@@ -218,8 +218,8 @@ q.getOrderListAndUsers((err, data) => {
 });
 */
 
-setTimeout(() => {
-    mongoose.connection.close();
-}, 1000);
+//setTimeout(() => {
+//    mongoose.connection.close();
+//}, 1000);
 
 

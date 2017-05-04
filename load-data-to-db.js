@@ -14,7 +14,7 @@ let json = require('./data/menu.json');
 mongoose.connection.collection('dishes').drop((err, result)=> {
     console.log('drop dishes:', result);
 
-    // загрузка данных (быстро, но без валидации)
+    // загрузка данных
     Dish.insertMany(json, function(err,result) {
     if (err) {
         // handle error

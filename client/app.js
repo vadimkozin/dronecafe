@@ -1,5 +1,7 @@
+// Точка входа в приложение 'cafeApp'. Настройка маршрутов и Socket.io
+
 (function () {
-//let cafeApp =
+
 angular.module('cafeApp', ['ngRoute', 'btford.socket-io', 'ui.materialize']);
 
 angular
@@ -25,24 +27,6 @@ angular
             templateUrl: '/kitchen/kitchen.view.html',
             controller: 'kitchenCtrl',
             controllerAs: 'vm'
-        }).
-
-        when('/berry/:berryId', {
-            templateUrl: 'src/BerryDetail/BerryDetail.html',
-            controller: 'BerryDetailCtrl'
-        }).
-        when('/create', {
-            templateUrl: 'src/CreatePokemon/CreatePokemon.html',
-            controller: 'CreatePokemonCtrl'
-        }).
-        when('/realtime/:userName', {
-            templateUrl: 'src/PokemonRealtime/PokemonRealtime.html',
-            controller: 'PokemonRealtimeCtrl'
-        }).
-
-        when('/cafe', {
-            templateUrl: 'src/CafeMain/CafeMain.html',
-            controller: 'CafeMainCtrl'
         }).
 
         otherwise({

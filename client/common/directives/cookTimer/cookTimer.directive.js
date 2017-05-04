@@ -1,4 +1,4 @@
-// таймер процесса приготовления блюда
+// директива: Таймер процесса приготовления блюда
 // пример:
 // <span cook-timer="dish.ts" stateId="dish.stateId" stateStart="1" ></span>
 // dish.ts - (Object): штампы времени перехода блюда по состояниям ts={state1:date1, state2:date1, .. state5:date5}

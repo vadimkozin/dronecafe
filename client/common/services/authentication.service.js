@@ -4,10 +4,10 @@
 
   angular
     .module('cafeApp')
-    .service('authentication', authentication);
+    .service('authenticationService', authenticationService);
 
-  authentication.$inject = ['$window', 'loggingService'];
-  function authentication ($window, loggingService) {
+  authenticationService.$inject = ['$window', 'loggingService'];
+  function authenticationService ($window, loggingService) {
     
     const log = loggingService.log;
 

@@ -1,8 +1,10 @@
+// все схемы и модели БД
+
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
-// состояние блюдаs
+// состояние блюда
 const STATE = {   
     ordered:    {code:1, name:'Заказано'},
     cooking:    {code:2, name:'Готовится'},
@@ -10,7 +12,6 @@ const STATE = {
     problems:   {code:4, name:'Возникли сложности'},
     served:     {code:5, name:'Подано'}, // (served to the table)
 };
-
 
 // схема: Блюдо
 let dishShema = new mongoose.Schema({

@@ -363,19 +363,14 @@ module.exports.dishSetState = function(obj, callback) {
             order.dishes.forEach((v,i,a) => {
                 if (v.dish._id == obj.dishId) {
                     v.dish.stateId = obj.stateId;
-                    v.dish.ts['state' + obj.stateId] = Date.now();    // фиксируем время перевода блюда в другое состояние
+                    // фиксируем время перевода блюда в другое состояние
+                    v.dish.ts['state' + obj.stateId] = Date.now();
                     
                     // если есть скидка на блюдо
                     if (obj.discount) { 
                         v.dish.discount = obj.discount;
                         v.dish.ts.state1 = new Date();
-                        /*
-                        [ 2, 3, 4, 5 ].forEach(x => {
-                            if (v.dish.ts['state' + x]) {
-                                v.dish.ts['state' + x] = v.dish.ts.state1;
-                            }
-                        });
-                        */
+                        // все штампы времени по процессу готовки = dish.ts.state1
                         for (let x in STATE) {
                             code = STATE[x].code;
                             if (v.dish.ts['state' + code]) {
@@ -455,7 +450,6 @@ module.exports.getOrderList = function(callback) {
             callback(err, null);
             return;
         }
-        //log('module.exports.getOrderList_docs:', docs);
         callback(err, docs);
     });
 }
@@ -476,7 +470,6 @@ module.exports.getOrderListAndUsers = function(callback) {
 
         if (orders) {
             orders.forEach(v => usersInOrders.push(v.userId));
-            //log('module.exports.getOrderListAndUsers_users:', usersInOrders);
             self.getUserList(usersInOrders, (err, users) => {
                 if (err) { return callback(err, null) }
                 if (users) {

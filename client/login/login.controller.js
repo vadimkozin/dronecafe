@@ -1,11 +1,13 @@
+// loginCtrl: контролер для страницы входа /login
+
 (function () {
 
   angular
     .module('cafeApp')
     .controller('loginCtrl', loginCtrl);
 
-  loginCtrl.$inject = ['$location', 'authentication', 'mySocket', 'loggingService'];
-  function loginCtrl($location, authentication, mySocket, loggingService) {
+  loginCtrl.$inject = ['$location', 'authenticationService', 'mySocket', 'loggingService'];
+  function loginCtrl($location, authenticationService, mySocket, loggingService) {
     let vm = this;
     const log = loggingService.log;
     
@@ -42,7 +44,7 @@
         }
         if (data._id) {
           log("DATA:::::", data);
-          authentication.saveToken(data.jwt);
+          authenticationService.saveToken(data.jwt);
           vm.user.name = "";
           vm.user.email = "";
           $location.search('page', null);
@@ -58,9 +60,7 @@
         email: vm.user.email,
       });
 
-    };
-
-
+    }; // end vm.doLogin()
 
 
   }

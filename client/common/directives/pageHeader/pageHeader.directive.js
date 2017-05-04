@@ -1,3 +1,5 @@
+// директива: pageHeader
+
 (function () {
 
   angular

@@ -12,7 +12,7 @@
     "homepage": "https://afternoon-shelf-16477.herokuapp.com"
   },
   "license": "MIT",
-  "author": "Punnett Square",
+  "author": "VK",
   "homepage": "https://afternoon-shelf-16477.herokuapp.com",
   "scripts": {
     "postinstall": "./node_modules/bower/bin/bower cache clean && ./node_modules/bower/bin/bower install",

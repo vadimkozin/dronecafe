@@ -4,18 +4,18 @@
     .module('cafeApp')
     .controller('navigationCtrl', navigationCtrl);
 
-  navigationCtrl.$inject = ['$location', 'authentication'];
-  function navigationCtrl($location, authentication) {
+  navigationCtrl.$inject = ['$location', 'authenticationService'];
+  function navigationCtrl($location, authenticationService) {
     let vm = this;
 
     vm.currentPath = $location.path();
 
-    vm.isLoggedIn = authentication.isLoggedIn();
+    vm.isLoggedIn = authenticationService.isLoggedIn();
 
-    vm.currentUser = authentication.currentUser();
+    vm.currentUser = authenticationService.currentUser();
 
     vm.logout = function() {
-      authentication.logout();
+      authenticationService.logout();
       $location.path('/login');
     };
 

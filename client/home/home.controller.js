@@ -1,18 +1,20 @@
+// homeCtrl: контролер для домашней страницы /home
+
 (function () {
 
   angular
     .module('cafeApp')
     .controller('homeCtrl', homeCtrl);
 
- homeCtrl.$inject = ['$scope', '$location', 'authentication', 'order', 'loggingService', 'stateService'];
-  function homeCtrl($scope, $location, authentication, order, loggingService, stateService) {
+ homeCtrl.$inject = ['$scope', '$location', 'authenticationService', 'orderService', 'loggingService', 'stateService'];
+  function homeCtrl($scope, $location, authenticationService, orderService, loggingService, stateService) {
     
     let vm = this;
     const log = loggingService.log;
 
     // текущие значения аутентификации
-    vm.isLoggedIn = authentication.isLoggedIn();
-    vm.currentUser = authentication.currentUser();
+    vm.isLoggedIn = authenticationService.isLoggedIn();
+    vm.currentUser = authenticationService.currentUser();
 
     // перенаправим на страницу входа, если пользователь еще не залогировался 
     if (!vm.isLoggedIn) {
@@ -26,7 +28,7 @@
     
     // текущий заказ
     vm.updateOrder = function() {
-      order.getOrderByUserId(vm.currentUser._id, (err, data) => {
+      orderService.getOrderByUserId(vm.currentUser._id, (err, data) => {
         log('order:', data);
         vm.currentOrder = data;
         vm.updateSummaOrder();
@@ -49,8 +51,8 @@
     // когда асинхронно пополним счёт, вот оно и пригодиться
     vm.updateCurrentUser = function() {
       $scope.$apply(function() {
-        vm.isLoggedIn = authentication.isLoggedIn();
-        vm.currentUser = authentication.currentUser();
+        vm.isLoggedIn = authenticationService.isLoggedIn();
+        vm.currentUser = authenticationService.currentUser();
       })
     }
 
@@ -86,13 +88,13 @@
 
       vm.formError = "";
       
-      order.refill({userId:vm.currentUser._id, summa}, (err, user) => {
+      orderService.refill({userId:vm.currentUser._id, summa}, (err, user) => {
         if (err) {
           vm.formError = err.message;
           return;
         }
         if (user) {
-          authentication.saveToken(user.jwt); // обновляем JWT, так как сумма на счете изменилась
+          authenticationService.saveToken(user.jwt); // обновляем JWT, так как сумма на счете изменилась
           vm.updateCurrentUser();             // чтобы представление обновило данные          
         }
       });
@@ -105,7 +107,7 @@
     // показать меню для добавления блюд к заказу 
     vm.showMenu = function() {
 
-      order.getMenu((err, data) => {
+      orderService.getMenu((err, data) => {
         if (data.err) {
           vm.formError = data.message;
           return;
@@ -124,7 +126,7 @@
       let orderId = vm.currentOrder ? vm.currentOrder._id : null;
       let obj = {dishId:dishId, userId:vm.currentUser._id, orderId:orderId};
 
-      order.addDishToOrder(obj, (err, data) => {
+      orderService.addDishToOrder(obj, (err, data) => {
         if (err) {
           log('home.controller.add_dish_to_order:', err);
           return;
@@ -138,7 +140,7 @@
 
     // удалить блюдо из заказа
     vm.deleteDishFromOrder = function(dishId, orderId) {
-      order.subtractDishFromOrder({dishId, orderId}, (err, data) => {
+      orderService.subtractDishFromOrder({dishId, orderId}, (err, data) => {
         if (err) {
           log('home.controller.deleteDishFromOrder:', err);
           return;
@@ -153,7 +155,7 @@
     vm.reOrder = function(dish, dishCount, orderId) {
       log('vm.reOrder :', dish);
       let discount = dish.discount * (100-5)/100;   // делаем скидку в 5% от текущей скидки
-      order.setDiscountOnDish({dishId:dish._id, orderId, discount, stateId:1}, (err, data) => {
+      orderService.setDiscountOnDish({dishId:dish._id, orderId, discount, stateId:1}, (err, data) => {
         if (err) {
           log('home.controller.reOrder_err:', err);
           return;
@@ -179,7 +181,7 @@
       if (user.account) {
         
         vm.updateSummaOrder();
-        authentication.saveToken(user.jwt); // обновляем JWT, так как сумма на счете изменилась
+        authenticationService.saveToken(user.jwt); // обновляем JWT, так как сумма на счете изменилась
         vm.updateCurrentUser();             // чтобы представление обновило данные
       }
 

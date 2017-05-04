@@ -1,3 +1,5 @@
+// директива: footerPage
+
 (function () {
 
     angular

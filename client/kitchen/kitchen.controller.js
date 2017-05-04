@@ -1,11 +1,13 @@
+// kitchenCtrl: контролер для страницы повора /kitchen
+
 (function () {
 
   angular
     .module('cafeApp')
     .controller('kitchenCtrl', kitchenCtrl);
 
-  kitchenCtrl.$inject = ['$scope', '$location', 'order', 'loggingService','stateService'];
-  function kitchenCtrl($scope, $location, order, loggingService, stateService ) {
+  kitchenCtrl.$inject = ['$scope', '$location', 'orderService', 'loggingService','stateService'];
+  function kitchenCtrl($scope, $location, orderService, loggingService, stateService ) {
     
     let vm = this;
     
@@ -47,7 +49,7 @@
       let obj = {userId:dish.userId, summa:dish.count*dish.price*dish.discount, orderId:dish.orderId, dishId:dish._id, stateId:nextState};
       
       // переход 
-      order.dishSetState(obj, (err, data) => {
+      orderService.dishSetState(obj, (err, data) => {
         if (err) {
           log('err:', err);
         }
@@ -60,7 +62,7 @@
 
     // текущее состояние по готовности блюд
     vm.start = function() {     
-      order.getOrderListAndUsers((err, data) => {
+      orderService.getOrderListAndUsers((err, data) => {
         vm.orderList = data.orderList;
         vm.userList = data.userList;
         vm.users.usersListToObject(vm.userList);

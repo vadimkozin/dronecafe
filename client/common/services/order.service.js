@@ -1,13 +1,13 @@
-// общение через Socket.io по вопросам заказа/блюд
+// сервис: общение с сервером через Socket.io по вопросам заказа/блюд
 
 (function () {
 
   angular
     .module('cafeApp')
-    .service('order', order);
+    .service('orderService', orderService);
 
-    order.$inject = ['mySocket', 'loggingService'];
-    function order (mySocket, loggingService) {
+    orderService.$inject = ['mySocket', 'loggingService'];
+    function orderService (mySocket, loggingService) {
         const log = loggingService.log;
         /**
          * Добавление блюда к заказу. Если заказа еще нет, то создаётся.

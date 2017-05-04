@@ -1,3 +1,4 @@
+// функция доставки с вероятностью 50% (нужна для отладки процесса)
 const random = require('./random');
 
 exports.deliver = () => {
