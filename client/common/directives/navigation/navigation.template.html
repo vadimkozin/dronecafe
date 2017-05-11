@@ -12,15 +12,15 @@ nav {
       <ul class="right hide-on-med-and-down">
         <li><a href="/home">Home</a></li>
         <li><a href="/kitchen">Kitchen</a></li>        
-        <li ng-hide="navvm.isLoggedIn"><a href="/login/?page={{ navvm.currentPath }}">Login</a></li>
-        <li ng-show="navvm.isLoggedIn"><a href="" ng-click="navvm.logout()">{{ navvm.currentUser.name }}<i class="material-icons right">exit_to_app</i></a></li>       
+        <li ng-if="!navvm.isLoggedIn"><a href="/login/?page={{ navvm.currentPath }}">Login</a></li>
+        <li ng-if="navvm.isLoggedIn"><a href="" ng-click="navvm.logout()">{{ navvm.currentUser.name }}<i class="material-icons right">exit_to_app</i></a></li>       
       </ul>
 
       <ul id="nav-mobile" class="side-nav">
         <li><a href="/home">Home</a></li>
         <li><a href="/kitchen">Kitchen</a></li> 
-        <li ng-hide="navvm.isLoggedIn"><a href="/login/?page={{ navvm.currentPath }}">Login</a></li>
-        <li ng-show="navvm.isLoggedIn"><a href="" ng-click="navvm.logout()">{{ navvm.currentUser.name }}<i class="material-icons right">exit_to_app</i></a></li>       
+        <li ng-if="!navvm.isLoggedIn"><a href="/login/?page={{ navvm.currentPath }}">Login</a></li>
+        <li ng-if="navvm.isLoggedIn"><a href="" ng-click="navvm.logout()">{{ navvm.currentUser.name }}<i class="material-icons right">exit_to_app</i></a></li>       
 
       </ul>
       <a href="#" data-activates="nav-mobile" class="button-collapse" data-sidenav="left" data-menuwidth="200" data-closeonclick="true">

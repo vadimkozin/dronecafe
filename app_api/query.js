@@ -1,5 +1,5 @@
 // api: Запросы к базе данных
-
+require('dotenv').load();
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 require ('./db');   //пока
@@ -33,7 +33,7 @@ module.exports.userFindOneOrCreate = function(data, callback) {
      
         if (err) { 
             console.log(err);
-            return;
+            return callback(err, null);
         }
 
         if (!doc) { // не найден, значит это новый клиент
@@ -42,7 +42,7 @@ module.exports.userFindOneOrCreate = function(data, callback) {
                     callback(err, null);
                     return;
                 } else {
-                    console.log('USER_CREATED:', user);
+                    //console.log('USER_CREATED:', user);
                     callback(err, _collectUserData(user));
                     return;
                 }
@@ -50,6 +50,40 @@ module.exports.userFindOneOrCreate = function(data, callback) {
         } else {
             callback(err, _collectUserData(doc));
         }
+    });
+}
+
+/**
+ * Удаляет пользователя из базы по _id
+ * @param {ObjectId} userId - код пользователя
+ * @param {Fn} callback (err, user) - результат
+ */
+module.exports.userDeleteById = function(userId, callback) {
+      User.findByIdAndRemove(userId, (err, user) => {
+        if (err) {
+             return callback(err, null);
+        }
+        if (user) {
+            return callback(null, user);
+        }
+      });
+}
+
+/**
+ * Удаляет пользователя из базы по email
+ * @param {String} email - адрес почты
+ * @param {Fn} callback (err, user) - результат
+ */
+module.exports.userDeleteByEmail = function(email, callback) {
+    User.findOneAndRemove({email}, (err, user) => {
+        if (err) {
+             return callback(err, null);
+        }
+        if (user) {
+            return callback(null, user);
+        }
+
+        callback(null, true);
     });
 }
 
@@ -76,7 +110,7 @@ module.exports.getUserList = function(userList, callback) {
 }
 
 /**
- * Возвращает объект JSON о состояниях заказа
+ * Возвращает объект JSON о состояниях приготовления блюда
  * @param {Fn} callback (err, docs) - результат
  */
 module.exports.getStateJSON = function(callback) {
@@ -143,14 +177,14 @@ module.exports.getDishOne = function(id, callback) {
  */
  module.exports.orderOpen = function(obj, callback) {
     Dish.findById(obj.dishId, function(err, dishOne) {
-        log('module.exports.orderOpen_err:', err);
-        log('module.exports.orderOpen_data:', dishOne);
+        //log('module.exports.orderOpen_err:', err);
+        //log('module.exports.orderOpen_data:', dishOne);
         
         if (err) {
             return callback(err, null);
         }
         if (dishOne) {
-            log('module.exports.orderOpen_userId:', obj.userId )
+            //log('module.exports.orderOpen_userId:', obj.userId )
             Order.create({userId:obj.userId, dishes:[{dish:dishOne}]}, function(err, doc) {
                 if (err) {
                     callback(err, null);
@@ -209,9 +243,9 @@ module.exports.getOrderByUserId = function(userId, callback) {
 module.exports.addDishToOrder = function(obj, callback) {
     self=this;
     // если заказа еще нет, то открываем заказ
-    log('query.add_dish_to_order:', obj);
+    //log('query.add_dish_to_order:', obj);
     if (!obj.orderId) {
-        log('obj.orderId', obj.orderId);
+        //log('obj.orderId', obj.orderId);
         this.orderOpen({userId:obj.userId, dishId:obj.dishId}, (err, doc) => {
             if (err) {
                 callback(err, null);
@@ -277,9 +311,11 @@ module.exports.subtractDishFromOrder = function(obj, callback) {
                 // forEach - красиво, но в нём нет break
                 // doc.dishes.forEach((v,i,a) => { if (a[i].dishId == obj.dishId) { a[i].count--; }} );
                 for (let i = 0; i < doc.dishes.length; i++ ) {
-                    if (doc.dishes[i].dish._id == obj.dishId) { 
+                     
+                    //if (doc.dishes[i].dish._id == obj.dishId) { 
+                    if (JSON.stringify(doc.dishes[i].dish._id) === JSON.stringify(obj.dishId)) {    
                         doc.dishes[i].count--;
-                        
+                       
                         if (doc.dishes[i].count <= 0) {
                             doc.dishes.splice(i, 1);    // удаляем блюдо из заказа
                         }
@@ -289,7 +325,7 @@ module.exports.subtractDishFromOrder = function(obj, callback) {
                 }
                 
                 // если блюд в заказе не осталось, то и заказ не нужен
-                console.log('doc.dishes.length:', doc.dishes.length);
+                //console.log('doc.dishes.length:', doc.dishes.length);
                 if (doc.dishes.length == 0) {
                     Order.findByIdAndRemove(obj.orderId, (err, res) => {
                         if (err) {
@@ -297,7 +333,7 @@ module.exports.subtractDishFromOrder = function(obj, callback) {
                             return;
                         }
                     });
-                    callback(null, {message: 'Заказ удалён, так как блюд в нём больше нет.'})
+                    callback(null, {deleted:'ok', message: 'Заказ удалён, так как блюд в нём больше нет.'})
                     return;
                 }
 
@@ -350,10 +386,10 @@ module.exports.orderSetState = function(orderId, stateId, callback) {
 //module.exports.dishSetState = function(orderId, dishId, stateId, callback) {
 module.exports.dishSetState = function(obj, callback) {
     
-    
     // сначала найдем заказ
     Order.findById(obj.orderId, function(err, order) {
-        if (err) { 
+       
+        if (err) {
             callback(err, null);
             return;
         }
@@ -361,8 +397,11 @@ module.exports.dishSetState = function(obj, callback) {
         // в заказе найдём блюдо
         if (order) {
             order.dishes.forEach((v,i,a) => {
-                if (v.dish._id == obj.dishId) {
+                
+                //if (v.dish._id == obj.dishId) {
+                if (JSON.stringify(v.dish._id) === JSON.stringify(obj.dishId)) { 
                     v.dish.stateId = obj.stateId;
+
                     // фиксируем время перевода блюда в другое состояние
                     v.dish.ts['state' + obj.stateId] = Date.now();
                     
@@ -382,7 +421,7 @@ module.exports.dishSetState = function(obj, callback) {
 
                     order.save()
                     .then(v => { return callback(null, order)},
-                        err => log(err)
+                        err => { return callback(err, null)}
                     )
                     
                 }

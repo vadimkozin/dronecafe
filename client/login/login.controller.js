@@ -6,23 +6,30 @@
     .module('cafeApp')
     .controller('loginCtrl', loginCtrl);
 
-  loginCtrl.$inject = ['$location', 'authenticationService', 'mySocket', 'loggingService'];
-  function loginCtrl($location, authenticationService, mySocket, loggingService) {
+  loginCtrl.$inject = ['$scope', '$location', 'authenticationService', 'mySocket', 'loggingService', 'orderService'];
+  function loginCtrl($scope, $location, authenticationService, mySocket, loggingService, orderService) {
+
     let vm = this;
     const log = loggingService.log;
     
+    // возвращает возможно ли сохранение данных формы (true/false)
+    vm.canSave = function() {
+      return $scope.loginForm.$dirty && $scope.loginForm.$valid;
+    };
+
+    // что-то выводим в заголовке
     vm.pageHeader = {
       title: 'Добро пожаловать',
       subtitle: ''
     };
 
+    // поля формы
     vm.user = {
       email : "",
       name: ""
     };
 
-    vm.returnPage = $location.search().page || '/';
-
+    // последняя проверка перед отправкой данных на сервер
     vm.onSubmit = function () {
       vm.formError = "";
       if (!vm.user.email || !vm.user.name) {
@@ -33,36 +40,24 @@
       }
     };
 
+    // процедура входа
     vm.doLogin = function() {
       vm.formError = "";
-      
-      mySocket.on('login', function(data) {
-        log(data);
-        if (data.err) {
-          vm.formError = data.message;
-          mySocket.removeListener('login');
+      orderService.login(vm.user, (err, data) => {
+        if (err) {
+          vm.formError = err.message;
         }
-        if (data._id) {
-          log("DATA:::::", data);
+        if (data) {
           authenticationService.saveToken(data.jwt);
           vm.user.name = "";
           vm.user.email = "";
-          $location.search('page', null);
-          //$location.path(vm.returnPage);
           $location.path('/home');
-          mySocket.removeListener('login'); 
         }
-
+      
       });
 
-      mySocket.emit('login', {
-        name: vm.user.name,
-        email: vm.user.email,
-      });
+    } // end vm.doLogin()
 
-    }; // end vm.doLogin()
-
-
-  }
+  } // end loginCtrl
 
 })();

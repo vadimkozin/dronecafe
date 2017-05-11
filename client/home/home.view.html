@@ -1,7 +1,7 @@
 <style>
 [cook-timer] {
   font-size: 110%;
-  color:darkgoldenrod;;
+  color:darkgoldenrod;
 }
 </style>
 
@@ -15,8 +15,8 @@
   <div class="divider"></div>
   <div class="section">
       <h6>Уважаемый, <big><strong>{{vm.currentUser.name}}</strong></big>, ваш баланс: {{vm.currentUser.account | currency }}</h6>
-        <button class="btn waves-effect waves-light light-green" ng-click="vm.doRefill()" name="action">Пополнить</button>
-        <button class="btn waves-effect waves-light light-green" ng-click="vm.doRefill(-100)" name="action">Уменьшить</button>       
+        <button class="btn waves-effect waves-light light-green" ng-click="vm.doRefill()" name="add">Пополнить</button>
+        <button class="btn waves-effect waves-light light-green" ng-click="vm.doRefill(-100)" name="sub">Уменьшить</button>       
   </div>
 
   <!-- Состояние заказа --> 
@@ -50,16 +50,13 @@
     <ul class="collection with-header">
         <li class="collection-header"><h4>Список блюд</h4></li>
         <li ng-repeat="menuItem in vm.menuList | orderBy:'title'"  class="collection-item" >
-          <!-- <div> {{menuItem.title}} ({{menuItem.price}}ye.) -->
-          <!-- <a href="" class="secondary-content">&nbsp;&nbsp;<i class="material-icons">send</i></a> -->
 
           <div> 
                 <span ng-if="!vm.switch.isShowDetails($index)" ><a class="waves-effect waves-teal secondary-content" ng-click="vm.switch.toggleShowDetails($index)"><i class="material-icons">chevron_right</i></a>{{ menuItem.title }} ({{ menuItem.price | currency }}) </span>
-
              
                 <span ng-if="vm.switch.isShowDetails($index)"><a class="waves-effect waves-teal secondary-content" href="" ng-click="vm.switch.toggleShowDetails($index)"><i class="material-icons">expand_more</i></a>{{ menuItem.title }} ({{ menuItem.price | currency }}) </span>
                     
-                <a ng-if="vm.currentUser.account-menuItem.price > 0 && !vm.switch.isShowDetails($index)" href="" ng-click="vm.addDishToOrder(menuItem._id);vm.doRefill(-menuItem.price)" class="waves-effect waves-teal secondary-content"><i class="small material-icons">add_circle</i></a>
+                <a ng-if="vm.currentUser.account-menuItem.price > 0 && !vm.switch.isShowDetails($index)" href="" id="add-dish-to-order" ng-click="vm.addDishToOrder(menuItem._id);vm.doRefill(-menuItem.price)" class="waves-effect waves-teal secondary-content"><i class="small material-icons">add_circle</i></a>
 
                 <span ng-if="vm.currentUser.account-menuItem.price <= 0" class="secondary-content">Пополните баланс на {{ menuItem.price - vm.currentUser.account | currency }}</span>
                 

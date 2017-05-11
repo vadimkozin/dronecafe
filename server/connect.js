@@ -3,9 +3,9 @@
 const socketIO = require('socket.io');
 const q = require ('../app_api/query');
 const log = require('./lib/logging').logging().log;
-//const deliver = require('netology-fake-drone-api').deliver;
-const deliver = require('./deliver/deliver').deliver;   // debug, reject=50%
-
+const state = require('../app_api/models').STATE;
+const deliver = require('netology-fake-drone-api').deliver;
+//const deliver = require('./deliver/deliver').deliver;   // debug, reject=50%
 
 function go(server) {
     const io = socketIO(server);
@@ -20,7 +20,17 @@ function go(server) {
                     if (err.code === 11000) {   // 11000 dublicate key
                         let message = { err: err, message: `Пользователь с таким email: ${msg.email} уже существует.` };
                         socket.emit('login', message);
+                    } else {
+                        //log('ERROR__:', err);
+                        //log('ERROR__errors:', err.errors);
+                        //log('ERROR__errors_name:', err.errors.name);
+                        //log('ERROR__errors_message:', err.message);
+                        //log('ERROR__errors_name_name:', err.errors.name.name);
+                        //log('ERROR__errors_name_message:', err.errors.name.message);
+                        //log('ERROR__errors_name_kind:', err.errors.name.kind);
+                        //log('ERROR__errors_name_properties:', err.errors.name.properties);
                     }
+                                        
                     return;
                 }
                 if (data) {
@@ -173,7 +183,6 @@ function go(server) {
         // перевод блюда в заказе в другое состояние (1-5)
         // obj = {orderId, dishId, stateId, userId, summa}   
         socket.on('dishSetState', function(obj) {
-            //q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
             q.dishSetState(obj, (err, data) => {
                 if (err) {
                     log('ERROR_:(%d) %s', err.code, err.message);
@@ -187,23 +196,22 @@ function go(server) {
                     log('DISH_SET_STATE :', data);
                     
                     // организация доставки блюда
-                    if (obj.stateId == 3) {
+                    if (obj.stateId == state.delivered.code  ) { //3
                         let d = deliver(obj.dishId);
                         d.then(
                             result => {     // всё хорошо, служба доставки справилась     
-                                obj.stateId = 5;
-                                //q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
+                                obj.stateId = state.served.code;    //5
                                 q.dishSetState(obj, (err, data) => {
                 
                                     if (data) {
+                                        socket.emit('changeStateDish', data);
                                         socket.broadcast.emit('changeStateDish', data);
                                     }
                                 });
 
                         }, 
                             error => {      // всё плохо, дрон разбился!
-                                obj.stateId = 4;                               
-                                //q.dishSetState(obj.orderId, obj.dishId, obj.stateId, (err, data) => {
+                                obj.stateId = state.problems.code;    //4                              
                                 q.dishSetState(obj, (err, data) => {
 
                                     if (data) {
@@ -215,6 +223,7 @@ function go(server) {
                                             }
                                             if (user) {
                                                 // и сообщить клиенту, что сумма вернулась на баланс
+                                                socket.emit('changeStateDish', user);
                                                 socket.broadcast.emit('changeStateDish', user);
                                             }
                                         });

@@ -35,7 +35,6 @@
       if(isLoggedIn()){
         let token = getToken();
         let payload = JSON.parse($window.atob(token.split('.')[1]));
-        log(payload);
         return {
           email : payload.email,
           name : payload.name,

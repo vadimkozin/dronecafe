@@ -16,7 +16,12 @@
   "homepage": "https://afternoon-shelf-16477.herokuapp.com",
   "scripts": {
     "postinstall": "./node_modules/bower/bin/bower cache clean && ./node_modules/bower/bin/bower install",
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "mocha --timeout 3000  ./test/unit/*.test.js",
+    "web-driver-start": "webdriver-manager start",
+    "web-driver-update": "webdriver-manager update",
+    "protractor": "protractor protractor.conf.js",
+    "protractor-debug": "protractor --elementExplorer"
   },
   "engines": {
     "node": "~6.9.0",
@@ -40,5 +45,11 @@
     "pug": "~2.0.0-beta11",
     "serve-favicon": "~2.4.2",
     "socket.io": "^1.7.3"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jasmine-reporters": "^2.2.1",
+    "mocha": "^3.3.0",
+    "protractor": "^5.1.1"
   }
 }

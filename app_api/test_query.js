@@ -8,8 +8,9 @@ const User = require ('./models').User;
 const q = require ('./query');
 
 // загрузка/проверка данных пользователя
-const name = 'Petr';
-const email = 'bar@bar.com';
+//const name = 'vadim-123';
+//const email = 'vadim@mail.ru';
+
 /*
 q.userFindOneOrCreate({name, email}, (err, data) => {
     if (err) {
@@ -18,6 +19,7 @@ q.userFindOneOrCreate({name, email}, (err, data) => {
     }
     if (data) {
         console.log('DATA:', data);
+        return;
     }
 });
 */
@@ -33,6 +35,19 @@ q.userList((err, data) => {
     }    
 });
 */
+
+// удаление пользователя
+let [name, email] = ['alex123_123', 'alex123_123@no_email_dadadada.ru'];
+q.userDeleteByEmail(email, (err, data) => {
+    if (err) {
+        console.log('ERROR_:(%d) %s', err.code, err.message);
+        return;
+    }
+    if (data) {
+        console.log('DATA:', data);
+    }
+});
+
 /*
 // список блюд (меню)
 q.menuList((err, data) => {
@@ -45,6 +60,7 @@ q.menuList((err, data) => {
     }    
 });
 */
+
 /*
 // увеличить счет пользователя
 let user = {name, email, account:300};
@@ -104,6 +120,8 @@ q.dishSetState(orderId, dishId, stateId, (err, data) => {
     }
 });
 */
+
+/*
 // Перевод всех блюд в ОДНО состояние
 q.allDishesSetStateOn(1, (err, data) => {
     if (err) {
@@ -113,6 +131,8 @@ q.allDishesSetStateOn(1, (err, data) => {
         console.log('allDishesSetStateOn:', data); 
     }  
 });
+*/
+
 
 /*
 
@@ -218,8 +238,8 @@ q.getOrderListAndUsers((err, data) => {
 });
 */
 
-//setTimeout(() => {
-//    mongoose.connection.close();
-//}, 1000);
+setTimeout(() => {
+    mongoose.connection.close();
+}, 1000);
 
 

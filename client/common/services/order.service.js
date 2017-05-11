@@ -211,6 +211,33 @@
             mySocket.emit('setDiscountOnDish', obj);  
         }
 
+        /**
+         * Вход на сайт
+         * @param {Object} obj {user, email} имя и email пользователя
+         * @param {Fn} callback (err, data) - результат
+         */
+        let login = function(obj, callback) {
+            mySocket.on('login', function(data) {
+                log("login_data:", data);
+                if (data.err) {
+                    mySocket.removeListener('login');
+                    let err = {err:data.err, message: data.message}
+                    callback(err, null);
+                }
+                if (data._id) {
+                    log("DATA:::::", data);
+                    mySocket.removeListener('login'); 
+                    callback(null, data);
+                }
+            });
+
+            mySocket.emit('login', {
+                name: obj.name,
+                email: obj.email,
+            });
+
+        }
+
         return {
             addDishToOrder : addDishToOrder,
             getOrderByUserId : getOrderByUserId,
@@ -220,8 +247,8 @@
             refill: refill,
             getMenu: getMenu,
             subtractDishFromOrder: subtractDishFromOrder,
-            setDiscountOnDish: setDiscountOnDish
-
+            setDiscountOnDish: setDiscountOnDish,
+            login: login
         };
 
     }
