@@ -16,4 +16,21 @@
     http://localhost:3000
 ```
 
+### run unit tests
+```bash
+    npm test
+    
+```
 
+### before e2e tests
+```bash
+    npm run web-driver-update
+```
+
+### run e2e testa
+```bash
+    # run in separate terminal window
+    npm run web-driver-start
+    # run in another terminal window
+    npm run protractor
+```
